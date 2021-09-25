@@ -6,18 +6,8 @@
 //
 import Foundation
 
-typealias TextHandler = (_ text:String?) -> Void
-typealias DataHandler = (_ data:Data?) -> Void
+//http://aftv2.ga:826//player_api.php?username=username&password=password&action=get_live_categories
 
-
-
-//http://aftv2.ga:826//player_api.php?username=toddbruss90&password=zzeH7C0xdw&action=get_live_categories
-
-struct IPTV {
-    let service = "http://aftv2.ga:826/"
-    let player = "player_api.php?"
-    let categoriesAction = "get_live_categories"
-}
 
 public func helloworld() {
     print("HELLOWORLD")
@@ -47,8 +37,9 @@ internal func TextAsync(endpoint: String, TextHandler: @escaping TextHandler)  {
     task.resume()
 }
 
-public func getCategories() {
-    let source = "http://aftv2.ga:826/player_api.php?username=toddbruss90&password=zzeH7C0xdw&action=get_live_categories"
+//zzeH7C0xdw
+public func getCategories(_ creds: Credentials, iptv: IPTV) {
+    let source = "http://aftv2.ga:826/player_api.php?username=\(creds.username)&password=\(creds.password)&action=get_live_categories"
     
     print(source)
     TextAsync(endpoint: source) { (categories) in
