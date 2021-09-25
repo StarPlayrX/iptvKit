@@ -1,4 +1,4 @@
-struct iptvKit {
+struct iptvKit2 {
     var text = "Hello, World!"
 }
 

@@ -7,27 +7,31 @@
 import Foundation
 
 typealias TextHandler = (_ text:String?) -> Void
+typealias DataHandler = (_ data:Data?) -> Void
 
-struct Credentials {
-    let username = ""
-    let password = ""
-}
+
+
+//http://aftv2.ga:826//player_api.php?username=toddbruss90&password=zzeH7C0xdw&action=get_live_categories
 
 struct IPTV {
     let service = "http://aftv2.ga:826/"
     let player = "player_api.php?"
-    let categoriesAction = "player_api.php?"
+    let categoriesAction = "get_live_categories"
+}
+
+public func helloworld() {
+    print("HELLOWORLD")
 }
 
 //MARK: Text
 internal func TextAsync(endpoint: String, TextHandler: @escaping TextHandler)  {
-    print("endpoint",endpoint)
+
     guard let url = URL(string: endpoint) else { TextHandler("error1"); return}
     
     var urlReq = URLRequest(url: url)
     urlReq.httpMethod = "GET"
-    //urlReq.timeoutInterval = TimeInterval(10)
-    //urlReq.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+    urlReq.timeoutInterval = TimeInterval(10)
+    urlReq.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
     print("urlReq",urlReq)
     let task = URLSession.shared.dataTask(with: urlReq ) { ( data, _, _ ) in
         print("data",data)
@@ -43,7 +47,7 @@ internal func TextAsync(endpoint: String, TextHandler: @escaping TextHandler)  {
     task.resume()
 }
 
-func getCategories() {
+public func getCategories() {
     let source = "http://aftv2.ga:826/player_api.php?username=toddbruss90&password=zzeH7C0xdw&action=get_live_categories"
     
     print(source)
