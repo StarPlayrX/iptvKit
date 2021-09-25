@@ -9,8 +9,8 @@ import Foundation
 typealias TextHandler = (_ text:String?) -> Void
 
 struct Credentials {
-    let username = "toddbruss90"
-    let password = "zzeH7C0xdw"
+    let username = ""
+    let password = ""
 }
 
 struct IPTV {
