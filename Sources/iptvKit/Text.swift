@@ -22,9 +22,7 @@ internal func TextAsync(endpoint: String, TextHandler: @escaping TextHandler)  {
     urlReq.httpMethod = "GET"
     urlReq.timeoutInterval = TimeInterval(10)
     urlReq.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-    print("urlReq",urlReq)
     let task = URLSession.shared.dataTask(with: urlReq ) { ( data, _, _ ) in
-        print("data",data)
         guard
             let d = data,
             let text = String(data: d, encoding: .utf8)

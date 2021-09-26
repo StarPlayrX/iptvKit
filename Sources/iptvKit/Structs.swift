@@ -21,17 +21,20 @@ public struct Credentials {
 // MARK: - IPTV
 public struct IPTV {
     public init(
-        service: String = "http://aftv2.ga:826",
-        playerAPI: String = "player_api.php",
-        getLiveCateogies: String = "get_live_categories") {
-        self.service = service
-        self.playerAPI = playerAPI
-        self.getLiveCateogies = getLiveCateogies
+        scheme: String = "https",
+        host: String = "primestreams.tv",
+        path: String = "/player_api.php",
+        getLiveCategoriesAction: String = "get_live_categories") {
+        self.scheme = scheme
+        self.host = host
+        self.path = path
+        self.getLiveCategoriesAction = getLiveCategoriesAction
     }
     
-    var service: String
-    var playerAPI: String
-    var getLiveCateogies: String
+    var scheme: String
+    var host: String
+    var path: String
+    var getLiveCategoriesAction: String
 }
 
 // MARK: - Category

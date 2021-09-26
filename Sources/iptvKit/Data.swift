@@ -8,31 +8,43 @@
 import Foundation
 
 //MARK: Data
-internal func DataAsync(endpoint: String, DataHandler: @escaping DataHandler)  {
+class Test: NSObject, URLSessionDelegate {
+    internal func DataAsync(endpoint: URLComponents, DataHandler: @escaping DataHandler)  {
 
-    guard
-        let url = URL(string: endpoint)
-    else {
-        DataHandler(nil)
-        return
-    }
-    
-    var urlReq = URLRequest(url: url)
-    urlReq.httpMethod = "GET"
-    urlReq.timeoutInterval = TimeInterval(30)
-    urlReq.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-    
-    let task = URLSession.shared.dataTask(with: urlReq ) { ( data, _, _ ) in
         guard
-            let data = data
+            let url = endpoint.url
         else {
             DataHandler(nil)
             return
         }
-        print(data)
-
-        DataHandler(data)
+        print(url)
+        var urlReq = URLRequest(url: url)
+        urlReq.httpMethod = "GET"
+        urlReq.timeoutInterval = TimeInterval(30)
+        urlReq.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        
+        let configuration = URLSessionConfiguration.default
+        let session = URLSession(configuration: configuration, delegate: self, delegateQueue:OperationQueue.main)
+        
+        let task = session.dataTask(with: urlReq) { ( data, a, b ) in
+            guard
+                let data = data
+            else {
+                DataHandler(nil)
+                return
+            }
+            
+            DataHandler(data)
+        }
+        
+        task.resume()
     }
     
-    task.resume()
+    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        guard let serverTrust = challenge.protectionSpace.serverTrust else { return }
+        completionHandler(URLSession.AuthChallengeDisposition.useCredential, URLCredential(trust: serverTrust))
+    }
 }
+
+
+
