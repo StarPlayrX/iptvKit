@@ -5,6 +5,7 @@
 //  Created by M1 on 9/24/21.
 //
 import Foundation
+
 //MARK: Text
 internal func TextAsync(endpoint: String, TextHandler: @escaping TextHandler)  {
 
