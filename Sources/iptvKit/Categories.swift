@@ -1,30 +1,25 @@
 //
 //  Categories.swift
-//  
 //
 //  Created by Todd Bruss on 9/24/21.
-//
 
 import Foundation
 
-
-// MARK: - Helper functions for creating encoders and decoders
-
-func newJSONDecoder() -> JSONDecoder {
-    let decoder = JSONDecoder()
-    if #available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *) {
-        decoder.dateDecodingStrategy = .iso8601
+//zzeH7C0xdw
+public func getCategories(_ creds: Credentials, _ iptv: IPTV) {
+    
+    let endpoint = "\(iptv.service)/\(iptv.playerAPI)?username=\(creds.username)&password=\(creds.password)&action=\(iptv.getLiveCateogies)"
+    print(endpoint)
+    DataAsync(endpoint: endpoint) { (categories) in
+        guard let categories = categories else {
+            print("FUCKER")
+            return
+        }
+        
+        print("categories",categories)
+        let decoder = JSONDecoder()
+       let cats = try? decoder.decode(Categories.self, from: categories)
+       print(cats as Any)
     }
-    return decoder
 }
-
-func newJSONEncoder() -> JSONEncoder {
-    let encoder = JSONEncoder()
-    if #available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *) {
-        encoder.dateEncodingStrategy = .iso8601
-    }
-    return encoder
-}
-
-
 

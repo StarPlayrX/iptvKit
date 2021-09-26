@@ -29,7 +29,8 @@ internal func DataAsync(endpoint: String, DataHandler: @escaping DataHandler)  {
             DataHandler(nil)
             return
         }
-        
+        print(data)
+
         DataHandler(data)
     }
     

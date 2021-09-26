@@ -37,22 +37,5 @@ internal func TextAsync(endpoint: String, TextHandler: @escaping TextHandler)  {
     task.resume()
 }
 
-//zzeH7C0xdw
-public func getCategories(_ creds: Credentials, iptv: IPTV) {
-    let source = "http://aftv2.ga:826/player_api.php?username=\(creds.username)&password=\(creds.password)&action=get_live_categories"
-    
-    print(source)
-    TextAsync(endpoint: source) { (categories) in
-        guard let categories = categories else {
-            
-            print("NOT GOOD")
-            return
-        }
-        
-        print("HELLO")
-    }
-    
-    
-}
 
 

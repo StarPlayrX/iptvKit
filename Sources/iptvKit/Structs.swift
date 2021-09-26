@@ -8,20 +8,34 @@
 import Foundation
 
 // MARK: - Credentials
-struct Credentials {
-    let username = ""
-    let password = ""
+public struct Credentials {
+    public init(username: String, password: String) {
+        self.username = username
+        self.password = password
+    }
+    
+    let username: String
+    let password: String
 }
 
 // MARK: - IPTV
-struct IPTV {
-    let service = "http://aftv2.ga:826/"
-    let player = "player_api.php?"
-    let getLiveCateogies = "get_live_categories"
+public struct IPTV {
+    public init(
+        service: String = "http://aftv2.ga:826",
+        playerAPI: String = "player_api.php",
+        getLiveCateogies: String = "get_live_categories") {
+        self.service = service
+        self.playerAPI = playerAPI
+        self.getLiveCateogies = getLiveCateogies
+    }
+    
+    var service: String
+    var playerAPI: String
+    var getLiveCateogies: String
 }
 
 // MARK: - Category
-struct Category: Codable {
+public struct Category: Codable {
     let categoryID, categoryName: String
     let parentID: Int
     

@@ -7,6 +7,6 @@
 
 import Foundation
 
-typealias TextHandler = (_ text:String?) -> Void
-typealias DataHandler = (_ data:Data?) -> Void
-typealias Categories = [Category]
+public typealias TextHandler = (_ text:String?) -> Void
+public typealias DataHandler = (_ data:Data?) -> Void
+public typealias Categories = [Category]
