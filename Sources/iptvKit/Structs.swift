@@ -24,16 +24,19 @@ public struct IPTV {
         scheme: String = "https",
         host: String = "primestreams.tv",
         path: String = "/player_api.php",
+        port: Int = 29971,
         getLiveCategoriesAction: String = "get_live_categories") {
         self.scheme = scheme
         self.host = host
         self.path = path
+        self.port = port
         self.getLiveCategoriesAction = getLiveCategoriesAction
     }
     
     var scheme: String
     var host: String
     var path: String
+    var port: Int
     var getLiveCategoriesAction: String
 }
 

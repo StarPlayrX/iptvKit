@@ -8,8 +8,8 @@
 import Foundation
 
 //MARK: Data
-class Test: NSObject, URLSessionDelegate {
-    internal func DataAsync(endpoint: URLComponents, DataHandler: @escaping DataHandler)  {
+class Rest: NSObject, URLSessionDelegate {
+    internal func getRequest(endpoint: URLComponents, DataHandler: @escaping DataHandler)  {
 
         guard
             let url = endpoint.url
@@ -17,7 +17,7 @@ class Test: NSObject, URLSessionDelegate {
             DataHandler(nil)
             return
         }
-        print(url)
+
         var urlReq = URLRequest(url: url)
         urlReq.httpMethod = "GET"
         urlReq.timeoutInterval = TimeInterval(30)
@@ -26,7 +26,7 @@ class Test: NSObject, URLSessionDelegate {
         let configuration = URLSessionConfiguration.default
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue:OperationQueue.main)
         
-        let task = session.dataTask(with: urlReq) { ( data, a, b ) in
+        let task = session.dataTask(with: urlReq) { ( data, _, _ ) in
             guard
                 let data = data
             else {
