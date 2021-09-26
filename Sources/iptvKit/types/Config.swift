@@ -8,12 +8,13 @@
 import Foundation
 
 // MARK: - Config
-struct Configuration: Codable {
-    public init(userInfo: Configuration.UserInfo, serverInfo: Configuration.ServerInfo) {
+public struct Configuration: Codable {
+    init(userInfo: Configuration.UserInfo, serverInfo: Configuration.ServerInfo) {
         self.userInfo = userInfo
         self.serverInfo = serverInfo
     }
     
+  
     let userInfo: UserInfo
     let serverInfo: ServerInfo
 

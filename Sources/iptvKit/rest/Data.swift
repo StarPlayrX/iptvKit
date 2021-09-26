@@ -6,8 +6,8 @@
 import Foundation
 
 //MARK: Data
-class Rest: NSObject, URLSessionDelegate {
-    internal func getRequest(endpoint: URLComponents, DataHandler: @escaping DataHandler)  {
+public class Rest: NSObject, URLSessionDelegate {
+    public func getRequest(endpoint: URLComponents, DataHandler: @escaping DataHandler)  {
 
         guard
             let url = endpoint.url
@@ -38,7 +38,7 @@ class Rest: NSObject, URLSessionDelegate {
         task.resume()
     }
     
-    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+    public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         guard let serverTrust = challenge.protectionSpace.serverTrust else { return }
         completionHandler(URLSession.AuthChallengeDisposition.useCredential, URLCredential(trust: serverTrust))
     }
