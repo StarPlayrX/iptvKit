@@ -5,8 +5,6 @@
 
 import Foundation
 
-//zzeH7C0xdw
-
 public class LoadCategories {
     
     public init() {}

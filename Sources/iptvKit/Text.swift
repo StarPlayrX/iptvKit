@@ -5,14 +5,6 @@
 //  Created by M1 on 9/24/21.
 //
 import Foundation
-
-//http://aftv2.ga:826//player_api.php?username=username&password=password&action=get_live_categories
-
-
-public func helloworld() {
-    print("HELLOWORLD")
-}
-
 //MARK: Text
 internal func TextAsync(endpoint: String, TextHandler: @escaping TextHandler)  {
 
@@ -34,6 +26,3 @@ internal func TextAsync(endpoint: String, TextHandler: @escaping TextHandler)  {
     
     task.resume()
 }
-
-
-
