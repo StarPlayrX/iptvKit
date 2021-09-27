@@ -8,14 +8,14 @@ import Foundation
 //MARK: Data
 public class Rest: NSObject, URLSessionDelegate {
     public func getRequest(endpoint: URLComponents, DataHandler: @escaping DataHandler)  {
-
+        
         guard
             let url = endpoint.url
         else {
             DataHandler(nil)
             return
         }
-
+        
         var urlReq = URLRequest(url: url)
         urlReq.httpMethod = "GET"
         urlReq.timeoutInterval = TimeInterval(30)
@@ -43,3 +43,5 @@ public class Rest: NSObject, URLSessionDelegate {
         completionHandler(URLSession.AuthChallengeDisposition.useCredential, URLCredential(trust: serverTrust))
     }
 }
+
+

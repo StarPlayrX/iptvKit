@@ -14,7 +14,6 @@ public struct Configuration: Codable {
         self.serverInfo = serverInfo
     }
     
-  
     let userInfo: UserInfo
     let serverInfo: ServerInfo
 
