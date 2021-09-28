@@ -16,8 +16,8 @@ public struct IPTV {
         self.port = port
     }
     
-    var scheme: String
-    var host: String
-    var path: String
-    var port: Int
+    public var scheme: String
+    public var host: String
+    public var path: String
+    public var port: Int
 }

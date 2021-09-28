@@ -14,6 +14,6 @@ public struct Creds {
         self.password = password
     }
     
-    let username: String
-    let password: String
+    public var username: String
+    public var password: String
 }
