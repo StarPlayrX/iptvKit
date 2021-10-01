@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Creds
-public struct Creds {
+public struct Credentials {
     public init(username: String, password: String) {
         self.username = username
         self.password = password

@@ -9,7 +9,7 @@ public class Api {
     
     public init() {}
     
-    public func getEndpoint(_ creds: Creds,_ iptv: IPTV,_ actn: String) -> URLComponents  {
+    public func getEndpoint(_ creds: Credentials,_ iptv: IPTV,_ actn: String) -> URLComponents  {
         endpoint(creds, iptv: iptv, actn: actn)
     }
 }

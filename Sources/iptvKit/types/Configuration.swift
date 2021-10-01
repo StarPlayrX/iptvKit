@@ -1,5 +1,5 @@
 //
-//  Config.swift
+//  Configuration.swift
 //  
 //
 //  Created by Todd Bruss on 9/26/21.
@@ -24,7 +24,7 @@ public struct Configuration: Codable {
     
     // MARK: - ServerInfo
     struct ServerInfo: Codable {
-        public init(url: String, port: String, httpsPort: String, serverProtocol: String, rtmpPort: String, timezone: String, timestampNow: Int, timeNow: String) {
+        init(url: String, port: String, httpsPort: String, serverProtocol: String, rtmpPort: String, timezone: String, timestampNow: Int, timeNow: String) {
             self.url = url
             self.port = port
             self.httpsPort = httpsPort
@@ -53,7 +53,7 @@ public struct Configuration: Codable {
     
     // MARK: - UserInfo
     struct UserInfo: Codable {
-        public init(username: String, password: String, message: String, auth: Int, status: String, expDate: String, isTrial: String, activeCons: String, createdAt: String, maxConnections: String, allowedOutputFormats: [String]) {
+        init(username: String, password: String, message: String, auth: Int, status: String, expDate: String, isTrial: String, activeCons: String, createdAt: String, maxConnections: String, allowedOutputFormats: [String]) {
             self.username = username
             self.password = password
             self.message = message

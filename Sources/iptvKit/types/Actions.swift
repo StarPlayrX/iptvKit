@@ -8,7 +8,9 @@
 import Foundation
 
 public enum Actions: String {
+    case start = "start"
     case getLiveCategoriesAction = "get_live_categories"
+    case getLiveStreams = "get_live_streams"
     case configAction = ""
 }
 

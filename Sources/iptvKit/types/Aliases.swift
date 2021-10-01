@@ -9,3 +9,5 @@ import Foundation
 public typealias TextHandler = (_ text:String?) -> Void
 public typealias DataHandler = (_ data:Data?) -> Void
 public typealias Categories = [Category]
+public typealias Channels = [Channel]
+public typealias Creds = Credentials
