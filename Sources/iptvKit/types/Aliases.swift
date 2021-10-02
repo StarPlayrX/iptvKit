@@ -11,3 +11,5 @@ public typealias DataHandler = (_ data:Data?) -> Void
 public typealias Categories = [Category]
 public typealias Channels = [Channel]
 public typealias Creds = Credentials
+public typealias Config = Configuration?
+

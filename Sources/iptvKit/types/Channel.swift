@@ -9,12 +9,12 @@ import Foundation
 
 // MARK: - ConfigElement
 public struct Channel: Codable {
-    let num: Int
-    let name: String
-    let streamID: Int
-    let streamIcon: String
-    let epgChannelID: String?
-    let categoryID: String
+    public let num: Int
+    public let name: String
+    public let streamID: Int
+    public let streamIcon: String
+    public let epgChannelID: String?
+    public let categoryID: String
 
     enum CodingKeys: String, CodingKey {
         case num = "num"
