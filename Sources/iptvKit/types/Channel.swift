@@ -9,6 +9,15 @@ import Foundation
 
 // MARK: - ConfigElement
 public struct Channel: Codable {
+    public init(num: Int, name: String, streamID: Int, streamIcon: String, epgChannelID: String?, categoryID: String) {
+        self.num = num
+        self.name = name
+        self.streamID = streamID
+        self.streamIcon = streamIcon
+        self.epgChannelID = epgChannelID
+        self.categoryID = categoryID
+    }
+    
     public let num: Int
     public let name: String
     public let streamID: Int
