@@ -23,3 +23,21 @@ func endpoint(_ creds: Credentials, iptv: IPTV, actn: String) -> URLComponents {
     
     return endpoint
 }
+
+func epgEndpoint(_ creds: Credentials, iptv: IPTV, actn: String, streamId: String) -> URLComponents {
+    var epgEndpoint = URLComponents()
+    
+    epgEndpoint.scheme = iptv.scheme
+    epgEndpoint.host = iptv.host
+    epgEndpoint.port = iptv.port
+    epgEndpoint.path = iptv.path
+
+    epgEndpoint.queryItems = [
+        URLQueryItem(name: "username", value: creds.username),
+        URLQueryItem(name: "password", value: creds.password),
+        URLQueryItem(name: "action", value: actn),
+        URLQueryItem(name: "stream_id", value: streamId)
+    ]
+    
+    return epgEndpoint
+}

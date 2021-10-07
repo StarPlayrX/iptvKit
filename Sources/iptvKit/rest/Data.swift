@@ -25,12 +25,15 @@ public class Rest: NSObject, URLSessionDelegate {
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue:OperationQueue.main)
         
         let task = session.dataTask(with: urlReq) { ( data, _, _ ) in
+            
             guard
                 let data = data
             else {
                 DataHandler(nil)
                 return
             }
+            
+            print(data.bytes.count)
             
             DataHandler(data)
         }
@@ -45,3 +48,14 @@ public class Rest: NSObject, URLSessionDelegate {
 }
 
 
+extension Data {
+    var bytes: [UInt8] {
+        return [UInt8](self)
+    }
+}
+
+extension Array where Element == UInt8 {
+    var data: Data {
+        return Data(self)
+    }
+}

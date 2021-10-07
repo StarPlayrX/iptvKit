@@ -21,7 +21,6 @@ internal func TextAsync(endpoint: String, TextHandler: @escaping TextHandler)  {
             let text = String(data: d, encoding: .utf8)
         else { TextHandler("error2"); return }
         
-        print(text)
         TextHandler(text)
     }
     
