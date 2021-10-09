@@ -32,9 +32,7 @@ public class Rest: NSObject, URLSessionDelegate {
                 DataHandler(nil)
                 return
             }
-            
-            print(data.bytes.count)
-            
+                        
             DataHandler(data)
         }
         
@@ -46,7 +44,6 @@ public class Rest: NSObject, URLSessionDelegate {
         completionHandler(URLSession.AuthChallengeDisposition.useCredential, URLCredential(trust: serverTrust))
     }
 }
-
 
 extension Data {
     var bytes: [UInt8] {
