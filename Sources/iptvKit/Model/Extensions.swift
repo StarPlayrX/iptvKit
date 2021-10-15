@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 extension RangeReplaceableCollection where Self: StringProtocol {
     var digits: Self { filter(\.isWholeNumber) }
 }

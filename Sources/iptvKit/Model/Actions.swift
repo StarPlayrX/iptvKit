@@ -111,10 +111,10 @@ func getChannels() {
             
             DispatchQueue.global().async {
                 
-                for ch in chan {
-                    usleep(useconds_t(500 * 1000))
-                    getShortEpgBulk(String(ch.streamID))
-                }
+                //for ch in chan {
+                 //   usleep(useconds_t(500 * 1000))
+                    //getShortEpgBulk(String(ch.streamID))
+                //}
                 
             }
         }

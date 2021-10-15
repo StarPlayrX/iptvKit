@@ -6,42 +6,7 @@
 //
 
 import Foundation
-import UIKit
-import AVKit
 
-public class PlayerObservable: ObservableObject {
-    static public var plo = PlayerObservable()
-    @Published public var miniEpg: [EpgListing] = []
-    @Published public var videoController = AVPlayerViewController()
-    @Published public var pip: Bool = false
-    @Published public var fullscreen: Bool = false
-    @Published public var reset: Bool = false
-    @Published public var streamID: String = ""
-    @Published public var channelName: String = ""
-    @Published public var imageURL: String = ""
-}
-
-
-public class ChannelsObservable: ObservableObject {
-    static var shared = ChannelsObservable()
-}
-
-public class CategoriesObservable: ObservableObject {
-    static var cto = CategoriesObservable()
-    @Published var status: String = "test"
-    @Published var loggedIn: Bool = false
-}
-
-
-public class LoginObservable: ObservableObject {
-    static public var shared = LoginObservable()
-    @Published public var status: String = "Update"
-    @Published public var port: String = "826"
-    @Published public var isLoggedIn: Bool = false
-    @Published public var isAutoSwitchCat: Bool = false
-    @Published public var isCatActive: Bool = false
-    @Published public var config: Config = nil
-}
 
 public func login(_ user: String,_ pass: String,_ host: String,_ port: String) {
     LoginObservable.shared.status = ""
@@ -108,7 +73,7 @@ var setCurrentStep: Stepper = .start {
     }
 }
 
-var awaitDone: Bool = false {
+public var awaitDone: Bool = false {
     didSet {
         if awaitDone {
             switch setCurrentStep {
