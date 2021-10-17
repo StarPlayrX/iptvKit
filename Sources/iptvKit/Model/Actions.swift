@@ -22,6 +22,55 @@ public func saveUserDefaults() {
     UserDefaults.standard.set(try? PropertyListEncoder().encode(LoginObservable.shared.config), forKey:userSettings)
 }
 
+
+public func setupVideoController(_ plo: PlayerObservable) {
+    plo.videoController.player = AVPlayer()
+    plo.videoController.player?.replaceCurrentItem(with: nil)
+    
+    if #available(iOS 15.0, *) {
+    #if !targetEnvironment(macCatalyst)
+        plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+        plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
+    #endif
+    } else {
+        // Fallback on earlier versions
+    }
+  
+
+    plo.videoController.requiresLinearPlayback = false
+    plo.videoController.showsTimecodes = false
+    plo.videoController.showsPlaybackControls = true
+    plo.videoController.requiresLinearPlayback = false
+    plo.videoController.entersFullScreenWhenPlaybackBegins = false
+    plo.videoController.showsPlaybackControls = true
+    plo.videoController.updatesNowPlayingInfoCenter = false
+    
+    commandCenter(plo)
+    
+}
+
+func commandCenter(_ plo: PlayerObservable) {
+    
+    let commandCenter = MPRemoteCommandCenter.shared()
+    
+    commandCenter.accessibilityActivate()
+    
+    commandCenter.playCommand.addTarget(handler: { (event) in
+        plo.videoController.player?.play()
+        return MPRemoteCommandHandlerStatus.success}
+    )
+    
+    commandCenter.pauseCommand.addTarget(handler: { (event) in
+        plo.videoController.player?.pause()
+        return MPRemoteCommandHandlerStatus.success}
+    )
+    
+    commandCenter.togglePlayPauseCommand.addTarget(handler: { (event) in
+        plo.videoController.player?.rate == 1 ? plo.videoController.player?.pause() : plo.videoController.player?.play()
+        return MPRemoteCommandHandlerStatus.success}
+    )
+}
+
 func getCategories() {
     let action = Actions.getLiveCategoriesAction.rawValue
     let endpoint = api.getEndpoint(creds, iptv, action)
@@ -168,10 +217,8 @@ public func getShortEpg(streamId: String, channelName: String, imageURL: String)
                     DispatchQueue.main.async {
                         
                         if let data = data, let image = UIImage(data: data), !channelName.isEmpty {
-                            print("SET NOW PLAYING INFO",channelName,image)
                             setnowPlayingInfo(channelName: channelName, image: image)
                         } else if !channelName.isEmpty {
-                            print("SET NOW PLAYING INFO", channelName)
                             setnowPlayingInfo(channelName: channelName, image: nil)
                         }
                     }

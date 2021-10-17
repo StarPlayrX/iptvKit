@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "iptvKit",
     platforms: [
-        .iOS("15.0"),
+        .iOS("14.5"),
        ],
 
     products: [
