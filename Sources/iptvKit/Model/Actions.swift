@@ -148,7 +148,7 @@ func getChannels() {
     }
 }
 
-public func getShortEpg(streamId: String, channelName: String = "", imageURL: String = "") {
+public func getShortEpg(streamId: String, channelName: String, imageURL: String) {
     let action = Actions.getshortEpg.rawValue
     let endpoint = api.getEpgEndpoint(creds, iptv, action, streamId)
     
@@ -168,8 +168,10 @@ public func getShortEpg(streamId: String, channelName: String = "", imageURL: St
                     DispatchQueue.main.async {
                         
                         if let data = data, let image = UIImage(data: data), !channelName.isEmpty {
+                            print("SET NOW PLAYING INFO",channelName,image)
                             setnowPlayingInfo(channelName: channelName, image: image)
                         } else if !channelName.isEmpty {
+                            print("SET NOW PLAYING INFO", channelName)
                             setnowPlayingInfo(channelName: channelName, image: nil)
                         }
                     }
@@ -225,8 +227,10 @@ public func setnowPlayingInfo(channelName:String, image: UIImage?) {
         nowPlayingInfoCenter.playbackState = .paused
     } else {
         nowPlayingInfoCenter.playbackState = PlayerObservable.plo.videoController.player?.timeControlStatus == .playing  ? .playing : .stopped
-        nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
     }
+    
+    nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
+
 }
 
 
