@@ -27,16 +27,11 @@ public func setupVideoController(_ plo: PlayerObservable) {
     plo.videoController.player = AVPlayer()
     plo.videoController.player?.replaceCurrentItem(with: nil)
     
-    if #available(iOS 15.0, *) {
-    #if !targetEnvironment(macCatalyst)
+    if #available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *) {
         plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
         plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
-    #endif
-    } else {
-        // Fallback on earlier versions
     }
   
-
     plo.videoController.requiresLinearPlayback = false
     plo.videoController.showsTimecodes = false
     plo.videoController.showsPlaybackControls = true
@@ -44,7 +39,6 @@ public func setupVideoController(_ plo: PlayerObservable) {
     plo.videoController.entersFullScreenWhenPlaybackBegins = false
     plo.videoController.showsPlaybackControls = true
     plo.videoController.updatesNowPlayingInfoCenter = false
-    
     commandCenter(plo)
     
 }
