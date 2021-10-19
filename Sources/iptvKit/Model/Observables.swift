@@ -40,6 +40,8 @@ public class PlayerObservable: ObservableObject {
     @Published public var fullscreen: Bool = false
     @Published public var reset: Bool = false
     @Published public var previousURL: URL = URL(string:"http://localhost.m3u8")!
+    @Published public var previousStreamID: Int? = -1
+    @Published public var previousCategoryID: String? = "-Cat"
 
     @Published public var streamID: String = ""
     @Published public var channelName: String = ""
