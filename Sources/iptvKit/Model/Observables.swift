@@ -35,11 +35,15 @@ public class ChannelsObservable: ObservableObject {
 public class PlayerObservable: ObservableObject {
     static public var plo = PlayerObservable()
     @Published public var miniEpg: [EpgListing] = []
-    @Published public var videoController = AVPlayerViewController()
+    @Published public var videoController: AVPlayerViewController = AVPlayerViewController()
     @Published public var pip: Bool = false
     @Published public var fullscreen: Bool = false
     @Published public var reset: Bool = false
+    @Published public var previousURL: URL = URL(string:"http://localhost.m3u8")!
+
     @Published public var streamID: String = ""
     @Published public var channelName: String = ""
     @Published public var imageURL: String = ""
+    @Published public var allowPlayback: Bool = false
+
 }

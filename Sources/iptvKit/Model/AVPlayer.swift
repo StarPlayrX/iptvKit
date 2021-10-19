@@ -9,16 +9,13 @@ import AVKit
 import SwiftUI
 import MediaPlayer
 
+
 public struct AVPlayerView: UIViewControllerRepresentable {
     public init(url: URL) {
         self.url = url
     }
     
     let url: URL
-    
-    //@State allows updating the variable in SwiftUI
-    @State var playedOnce: Bool = false
-    
     @ObservedObject var plo = PlayerObservable.plo
     
     public class Coordinator: NSObject, AVPlayerViewControllerDelegate, UINavigationControllerDelegate {
@@ -51,13 +48,19 @@ public struct AVPlayerView: UIViewControllerRepresentable {
     }
     
     public func makeUIViewController(context: Context) -> AVPlayerViewController {
+        
+        print("RAN")
+        
         plo.videoController.updatesNowPlayingInfoCenter = false
-        let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true ]
-        let asset = AVURLAsset.init(url: url, options:options)
-      
-        let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
-      
-        plo.videoController.player?.replaceCurrentItem(with: playerItem)
+        
+        if plo.previousURL != url {
+            let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true ]
+            let asset = AVURLAsset.init(url: url, options:options)
+            let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
+            plo.videoController.player?.replaceCurrentItem(with: playerItem)
+            plo.previousURL = url
+        }
+     
         plo.videoController.player?.currentItem?.seekingWaitsForVideoCompositionRendering = false
         plo.videoController.player?.currentItem?.appliesPerFrameHDRDisplayMetadata = true
         plo.videoController.player?.currentItem?.preferredForwardBufferDuration = 0
@@ -79,7 +82,7 @@ public struct AVPlayerView: UIViewControllerRepresentable {
         plo.videoController.delegate = context.coordinator
         plo.videoController.player?.playImmediately(atRate: 1.0)
         plo.videoController.view.backgroundColor = UIColor.clear
-        return plo.videoController
+        return  plo.videoController
     }
     
     
