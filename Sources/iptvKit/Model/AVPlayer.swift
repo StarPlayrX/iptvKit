@@ -48,9 +48,7 @@ public struct AVPlayerView: UIViewControllerRepresentable {
     }
     
     public func makeUIViewController(context: Context) -> AVPlayerViewController {
-        
-        print("RAN")
-        
+            
         plo.videoController.updatesNowPlayingInfoCenter = false
         
         if plo.previousURL != url {
