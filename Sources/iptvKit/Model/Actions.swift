@@ -5,6 +5,7 @@
 //  Created by Todd Bruss on 9/27/21.
 //
 
+
 import Foundation
 import MediaPlayer
 
@@ -27,9 +28,13 @@ public func setupVideoController(_ plo: PlayerObservable) {
     plo.videoController.player = AVPlayer()
     plo.videoController.player?.replaceCurrentItem(with: nil)
     
-    if #available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *) {
+    if #available(iOS 15.0, *) {
+        
+    #if !targetEnvironment(macCatalyst)
         plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
         plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
+        #endif
+      
     }
   
     plo.videoController.requiresLinearPlayback = false
@@ -273,16 +278,3 @@ public func setnowPlayingInfo(channelName:String, image: UIImage?) {
     nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
 
 }
-
-
-
-func loopOverChannelsNowPlaying() {
-    
-}
-
-/*
- 
- 
- 
- 
- */

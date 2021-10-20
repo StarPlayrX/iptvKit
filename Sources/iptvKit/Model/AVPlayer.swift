@@ -69,8 +69,10 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             plo.videoController.player?.allowsExternalPlayback = true
             plo.videoController.player?.externalPlaybackVideoGravity = .resizeAspectFill
             
-            if #available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *) {
-                plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+            if #available(iOS 15.0, *) {
+                #if !targetEnvironment(macCatalyst)
+                    plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+                #endif
             }
             
             plo.videoController.player?.appliesMediaSelectionCriteriaAutomatically = true
