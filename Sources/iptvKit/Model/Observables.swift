@@ -12,13 +12,15 @@ import AVKit
 public class LoginObservable: ObservableObject {
     static public var shared = LoginObservable()
     @Published public var status: String = "Update"
-    @Published public var port: String = "826"
     @Published public var isLoggedIn: Bool = false
     @Published public var isAutoSwitchCat: Bool = false
     @Published public var isCatActive: Bool = false
     @Published public var config: Config = nil
+    @Published public var url: String = ""
+    @Published public var port: String = ""
+    @Published public var username: String = ""
+    @Published public var password: String = ""
 }
-
 //MARK: - 2
 public class CategoriesObservable: ObservableObject {
     static var cto = CategoriesObservable()

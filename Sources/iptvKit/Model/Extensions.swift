@@ -14,7 +14,7 @@ extension RangeReplaceableCollection where Self: StringProtocol {
 
 public extension DispatchQueue {
     
-   public  static func background(delay: Double = 0.0, background: (()->Void)? = nil, completion: (() -> Void)? = nil) {
+     static func background(delay: Double = 0.0, background: (()->Void)? = nil, completion: (() -> Void)? = nil) {
         DispatchQueue.global(qos: .background).async {
             background?()
             if let completion = completion {
@@ -101,5 +101,17 @@ extension UIImage {
 
         return squareImage
     }
+}
 
+
+public extension Data {
+    var bytes: [UInt8] {
+        return [UInt8](self)
+    }
+}
+
+public extension Array where Element == UInt8 {
+    var data: Data {
+        return Data(self)
+    }
 }

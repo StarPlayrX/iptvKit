@@ -10,15 +10,15 @@ import Foundation
 public let api = Api()
 
 public var creds = Creds (
-    username: "toddbruss90",
-    password: "zzeH7C0xdw"
+    username: "",
+    password: ""
 )
 
 public var iptv = IPTV (
     scheme: "http",
     host: "",
     path: "/player_api.php",
-    port: 80) //29971
+    port: 826) 
 
 public let rest = Rest()
 public let decoder = JSONDecoder()
@@ -27,3 +27,10 @@ public var cats: Categories = Categories()
 public var conf: Configuration? = nil
 public var chan: Channels = Channels()
 public var shortEpg: iptvShortEpg? = nil
+
+
+public let userSettings = "userSettings"
+
+public func saveUserDefaults() {
+    UserDefaults.standard.set(try? PropertyListEncoder().encode(LoginObservable.shared.config), forKey:userSettings)
+}

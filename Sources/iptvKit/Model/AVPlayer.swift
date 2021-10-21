@@ -9,7 +9,6 @@ import AVKit
 import SwiftUI
 import MediaPlayer
 
-
 public struct AVPlayerView: UIViewControllerRepresentable {
     public init(url: URL) {
         self.url = url

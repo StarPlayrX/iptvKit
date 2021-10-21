@@ -7,6 +7,6 @@
             // Use XCTAssert and related functions to verify your tests produce the correct
             // results.
             
-            XCTAssertEqual(iptvKit().text, "Hello, World!")
+            XCTAssertEqual(iptvKit().text, "Hello, World")
         }*/
     }

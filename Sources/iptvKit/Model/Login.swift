@@ -40,6 +40,11 @@ enum Stepper {
 
 enum Status: String {
     case Login = "Login"
+    case LoginError = "Login Error"
+    case ConfigurationError = "Configuration Error"
+    case CategoriesError = "Categories Error"
+    case ChannelsError = "Channels Error"
+
     case Configuration = "Configuration"
     case Categories = "Categories"
     case Channels = "Channels"
@@ -48,6 +53,22 @@ enum Status: String {
 var setCurrentStep: Stepper = .start {
     didSet {
         switch setCurrentStep {
+        case .ConfigurationError :
+            awaitDone = false
+            LoginObservable.shared.isAutoSwitchCat = false
+            LoginObservable.shared.isLoggedIn = false
+            LoginObservable.shared.status = Status.LoginError.rawValue
+        case .CategoriesError :
+            awaitDone = false
+            LoginObservable.shared.isAutoSwitchCat = false
+            LoginObservable.shared.isLoggedIn = false
+            LoginObservable.shared.status = Status.CategoriesError.rawValue
+        case .ChannelsError :
+            awaitDone = false
+            LoginObservable.shared.isAutoSwitchCat = false
+            LoginObservable.shared.isLoggedIn = false
+            LoginObservable.shared.status = Status.ChannelsError.rawValue
+
         case .config:
             getConfig()
             LoginObservable.shared.status = Status.Login.rawValue
@@ -62,14 +83,15 @@ var setCurrentStep: Stepper = .start {
             
         case .finish:
             //done
+            awaitDone = false
             LoginObservable.shared.status = Status.Channels.rawValue
             LoginObservable.shared.isAutoSwitchCat = true
             LoginObservable.shared.isLoggedIn = true
         default:
-            ()
+            awaitDone = false
+
         }
         
-        awaitDone = false
     }
 }
 
