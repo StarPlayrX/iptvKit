@@ -1,3 +1,3 @@
 # iptvKit
 
-A description of this package.
+The heart of IPTVee for iOS, macOS and soon tvOS.
