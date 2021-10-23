@@ -42,11 +42,8 @@ public struct AVPlayerView: UIViewControllerRepresentable {
         Coordinator()
     }
     
-    public func updateUIViewController(_ videoController: AVPlayerViewController, context: Context) {
-        plo.videoController.updatesNowPlayingInfoCenter = false
-    }
+    public func updateUIViewController(_ videoController: AVPlayerViewController, context: Context) {}
     
-
     public func makeUIViewController(context: Context) -> AVPlayerViewController {
         if url != plo.previousURL {
             plo.previousURL = url
@@ -54,7 +51,7 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ] 
             let asset = AVURLAsset.init(url: url, options:options)
             let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
-           
+            plo.videoController.player?.replaceCurrentItem(with: nil)
             plo.videoController.player = AVPlayer(playerItem: playerItem)
             plo.videoController.player?.currentItem?.automaticallyHandlesInterstitialEvents = true
             plo.videoController.player?.currentItem?.seekingWaitsForVideoCompositionRendering = false
