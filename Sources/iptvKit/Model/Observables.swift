@@ -30,13 +30,17 @@ public class CategoriesObservable: ObservableObject {
 
 //MARK: - 3
 public class ChannelsObservable: ObservableObject {
-    static var shared = ChannelsObservable()
+    static public var shared = ChannelsObservable()
+    @Published public var chan: Channels? = Channels()
+
 }
 
 //MARK: - 4
 public class PlayerObservable: ObservableObject {
     static public var plo = PlayerObservable()
     @Published public var miniEpg: [EpgListing] = []
+    @Published public var nowPlayingEpg: [String: NowPlayingValue]? = nil
+
     @Published public var videoController: AVPlayerViewController = AVPlayerViewController()
     @Published public var pip: Bool = false
     @Published public var fullscreen: Bool = false

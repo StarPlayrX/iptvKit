@@ -9,8 +9,7 @@ import Foundation
 import MediaPlayer
 
 public func setupVideoController(_ plo: PlayerObservable) {
-    plo.videoController.player = AVPlayer()
-    plo.videoController.player?.replaceCurrentItem(with: nil)
+    plo.videoController.player = AVPlayer(playerItem: nil)
     
     if #available(iOS 15.0, *) {
         

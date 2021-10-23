@@ -16,4 +16,8 @@ public class Api {
     public func getEpgEndpoint(_ creds: Credentials,_ iptv: IPTV,_ actn: String, _ streamId: String) -> URLComponents  {
         epgEndpoint(creds, iptv: iptv, actn: actn, streamId: streamId)
     }
+    
+    public func getNowPlayingEndpoint() -> URLComponents  {
+        nowPlayingEndpoint()
+    }
 }

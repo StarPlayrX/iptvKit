@@ -41,3 +41,14 @@ func epgEndpoint(_ creds: Credentials, iptv: IPTV, actn: String, streamId: Strin
     
     return epgEndpoint
 }
+
+func nowPlayingEndpoint() -> URLComponents {
+    var epgEndpoint = URLComponents()
+    
+    epgEndpoint.scheme = "http"
+    epgEndpoint.host = "www.starplayrx.com"
+    epgEndpoint.port = 9999
+    epgEndpoint.path = "/nowplaying"
+    
+    return epgEndpoint
+}

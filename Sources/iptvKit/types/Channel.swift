@@ -8,14 +8,16 @@
 import Foundation
 
 // MARK: - ConfigElement
-public struct iptvChannel: Codable {
-    public init(num: Int, name: String, streamID: Int, streamIcon: String, epgChannelID: String?, categoryID: String) {
+public struct iptvChannel: Codable, Identifiable {
+    public init(num: Int, name: String, streamID: Int, streamIcon: String, epgChannelID: String?, categoryID: String, nowPlaying: String = "", id: UUID = UUID()) {
         self.num = num
         self.name = name
         self.streamID = streamID
         self.streamIcon = streamIcon
         self.epgChannelID = epgChannelID
         self.categoryID = categoryID
+        self.nowPlaying = nowPlaying
+        self.id = id
     }
     
     public let num: Int
@@ -24,7 +26,9 @@ public struct iptvChannel: Codable {
     public let streamIcon: String
     public let epgChannelID: String?
     public let categoryID: String
-
+    public var nowPlaying: String = ""
+    public var id = UUID()
+    
     enum CodingKeys: String, CodingKey {
         case num = "num"
         case name = "name"

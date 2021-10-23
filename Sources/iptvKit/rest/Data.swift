@@ -24,8 +24,8 @@ public class Rest: NSObject, URLSessionDelegate {
         let configuration = URLSessionConfiguration.default
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue:OperationQueue.main)
         
-        let task = session.dataTask(with: urlReq) { ( data, _, _ ) in
-            
+        let task = session.dataTask(with: urlReq) { ( data, response, error ) in
+                        
             guard
                 let data = data
             else {

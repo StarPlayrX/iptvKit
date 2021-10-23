@@ -46,23 +46,23 @@ public struct AVPlayerView: UIViewControllerRepresentable {
         plo.videoController.updatesNowPlayingInfoCenter = false
     }
     
+
     public func makeUIViewController(context: Context) -> AVPlayerViewController {
-        plo.videoController.updatesNowPlayingInfoCenter = false
-        
-        if plo.previousURL != url {
-            let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true ]
-            let asset = AVURLAsset.init(url: url, options:options)
-            let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
-            plo.videoController.player?.replaceCurrentItem(with: playerItem)
-            plo.videoController.player?.playImmediately(atRate: 1.0)
+        if url != plo.previousURL {
             plo.previousURL = url
             
+            let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ] 
+            let asset = AVURLAsset.init(url: url, options:options)
+            let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
+           
+            plo.videoController.player = AVPlayer(playerItem: playerItem)
+            plo.videoController.player?.currentItem?.automaticallyHandlesInterstitialEvents = true
             plo.videoController.player?.currentItem?.seekingWaitsForVideoCompositionRendering = false
             plo.videoController.player?.currentItem?.appliesPerFrameHDRDisplayMetadata = true
-            plo.videoController.player?.currentItem?.preferredForwardBufferDuration = 0
-            plo.videoController.player?.currentItem?.automaticallyPreservesTimeOffsetFromLive = true
-            plo.videoController.player?.currentItem?.canUseNetworkResourcesForLiveStreamingWhilePaused = true
-            plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 10, preferredTimescale: 1000)
+            plo.videoController.player?.currentItem?.preferredForwardBufferDuration = 10
+            plo.videoController.player?.currentItem?.automaticallyPreservesTimeOffsetFromLive = false
+            plo.videoController.player?.currentItem?.canUseNetworkResourcesForLiveStreamingWhilePaused = false
+            plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 10, preferredTimescale: 600)
             plo.videoController.player?.currentItem?.startsOnFirstEligibleVariant = true
             plo.videoController.player?.currentItem?.variantPreferences = .scalabilityToLosslessAudio
             plo.videoController.player?.allowsExternalPlayback = true
@@ -78,10 +78,11 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
             plo.videoController.delegate = context.coordinator
             plo.videoController.view.backgroundColor = UIColor.clear
-            return plo.videoController
+            plo.videoController.player?.play()
         }
         
         return plo.videoController
+
     }
     
     
