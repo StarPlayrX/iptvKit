@@ -12,12 +12,10 @@ public func setupVideoController(_ plo: PlayerObservable) {
     plo.videoController.player = AVPlayer(playerItem: nil)
     
     if #available(iOS 15.0, *) {
-        
-    #if !targetEnvironment(macCatalyst)
+        #if !targetEnvironment(macCatalyst)
         plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
         plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
         #endif
-      
     }
   
     plo.videoController.requiresLinearPlayback = false
@@ -27,6 +25,29 @@ public func setupVideoController(_ plo: PlayerObservable) {
     plo.videoController.entersFullScreenWhenPlaybackBegins = false
     plo.videoController.showsPlaybackControls = true
     plo.videoController.updatesNowPlayingInfoCenter = false
+    
+    plo.videoController.player?.currentItem?.automaticallyHandlesInterstitialEvents = true
+    plo.videoController.player?.currentItem?.seekingWaitsForVideoCompositionRendering = true
+    plo.videoController.player?.currentItem?.appliesPerFrameHDRDisplayMetadata = true
+    plo.videoController.player?.currentItem?.preferredForwardBufferDuration = 80
+    plo.videoController.player?.currentItem?.automaticallyPreservesTimeOffsetFromLive = true
+    plo.videoController.player?.currentItem?.canUseNetworkResourcesForLiveStreamingWhilePaused = true
+    plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 80, preferredTimescale: 600)
+    plo.videoController.player?.currentItem?.startsOnFirstEligibleVariant = true
+    plo.videoController.player?.currentItem?.variantPreferences = .scalabilityToLosslessAudio
+    plo.videoController.player?.allowsExternalPlayback = true
+    plo.videoController.player?.externalPlaybackVideoGravity = .resizeAspectFill
+    
+    if #available(iOS 15.0, *) {
+        #if !targetEnvironment(macCatalyst)
+            plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+        #endif
+    }
+    
+    plo.videoController.player?.appliesMediaSelectionCriteriaAutomatically = true
+    plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
+    plo.videoController.view.backgroundColor = UIColor.clear
+    
     commandCenter(plo)
     
 }

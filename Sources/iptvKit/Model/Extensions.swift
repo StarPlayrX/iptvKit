@@ -41,34 +41,7 @@ public extension String {
     }
 }
 
-public extension String {
 
-    func toDate(withFormat format: String = "yyyy-MM-dd HH:mm:ss")-> Date?
-    {
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = .current
-        dateFormatter.locale = .current
-        dateFormatter.calendar = Calendar(identifier: .gregorian)
-        dateFormatter.dateFormat = format
-        let date = dateFormatter.date(from: self)
-        return date
-
-    }
-}
-
-//"MMM dd yyyy h:mm a"
-public extension Date {
-    func toString(withFormat format: String = "h:mm a") -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = .current
-        dateFormatter.timeZone = .current
-        dateFormatter.calendar = Calendar(identifier: .gregorian)
-        dateFormatter.dateFormat = format
-        let str = dateFormatter.string(from: self)
-        return str
-    }
-}
 
 
 extension UIImage {
@@ -113,5 +86,31 @@ public extension Data {
 public extension Array where Element == UInt8 {
     var data: Data {
         return Data(self)
+    }
+}
+
+public extension String {
+
+    func toDate(withFormat format: String = "yyyy-MM-dd HH:mm:ss") -> Date? {
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = .autoupdatingCurrent
+        dateFormatter.locale = .autoupdatingCurrent
+        dateFormatter.calendar = Calendar(identifier: .gregorian)
+        dateFormatter.dateFormat = format
+        let date = dateFormatter.date(from: self)
+        return date
+    }
+}
+
+public extension Date {
+    func toString(withFormat format: String = "h:mm a") -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = .autoupdatingCurrent
+        dateFormatter.timeZone = .autoupdatingCurrent
+        dateFormatter.calendar = Calendar(identifier: .gregorian)
+        dateFormatter.dateFormat = format
+        let str = dateFormatter.string(from: self)
+        return str
     }
 }

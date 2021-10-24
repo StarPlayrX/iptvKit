@@ -25,21 +25,22 @@ public struct Configuration: Codable {
 
 // MARK: - ServerInfo
 public struct ServerInfo: Codable {
-    public init(url: String, port: String, httpsPort: String, serverProtocol: String, rtmpPort: String, timezone: String, timestampNow: Int, timeNow: String) {
-        self.url = url
-        self.port = port
-        self.httpsPort = httpsPort
-        self.serverProtocol = serverProtocol
+    public init(rtmpPort: String, timezone: String, timestampNow: Int, timeNow: String, url: String, port: String, httpsPort: String, serverProtocol: String) {
         self.rtmpPort = rtmpPort
         self.timezone = timezone
         self.timestampNow = timestampNow
         self.timeNow = timeNow
+        self.url = url
+        self.port = port
+        self.httpsPort = httpsPort
+        self.serverProtocol = serverProtocol
     }
-    
-    public let url, port, httpsPort, serverProtocol: String
-    public let rtmpPort, timezone: String
+
+    public let rtmpPort: String
+    public let timezone: String
     public let timestampNow: Int
     public let timeNow: String
+    public let url, port, httpsPort, serverProtocol: String
 
     enum CodingKeys: String, CodingKey {
         case url, port

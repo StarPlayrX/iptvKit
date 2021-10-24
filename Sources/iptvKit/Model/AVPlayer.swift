@@ -45,36 +45,15 @@ public struct AVPlayerView: UIViewControllerRepresentable {
     public func updateUIViewController(_ videoController: AVPlayerViewController, context: Context) {}
     
     public func makeUIViewController(context: Context) -> AVPlayerViewController {
-        if url != plo.previousURL {
-            plo.previousURL = url
+        if url.absoluteString != plo.previousURL {
+            plo.previousURL = url.absoluteString
             
             let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ] 
             let asset = AVURLAsset.init(url: url, options:options)
             let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
             plo.videoController.player?.replaceCurrentItem(with: nil)
             plo.videoController.player = AVPlayer(playerItem: playerItem)
-            plo.videoController.player?.currentItem?.automaticallyHandlesInterstitialEvents = true
-            plo.videoController.player?.currentItem?.seekingWaitsForVideoCompositionRendering = false
-            plo.videoController.player?.currentItem?.appliesPerFrameHDRDisplayMetadata = true
-            plo.videoController.player?.currentItem?.preferredForwardBufferDuration = 10
-            plo.videoController.player?.currentItem?.automaticallyPreservesTimeOffsetFromLive = false
-            plo.videoController.player?.currentItem?.canUseNetworkResourcesForLiveStreamingWhilePaused = false
-            plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 10, preferredTimescale: 600)
-            plo.videoController.player?.currentItem?.startsOnFirstEligibleVariant = true
-            plo.videoController.player?.currentItem?.variantPreferences = .scalabilityToLosslessAudio
-            plo.videoController.player?.allowsExternalPlayback = true
-            plo.videoController.player?.externalPlaybackVideoGravity = .resizeAspectFill
-            
-            if #available(iOS 15.0, *) {
-                #if !targetEnvironment(macCatalyst)
-                    plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
-                #endif
-            }
-            
-            plo.videoController.player?.appliesMediaSelectionCriteriaAutomatically = true
-            plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
             plo.videoController.delegate = context.coordinator
-            plo.videoController.view.backgroundColor = UIColor.clear
             plo.videoController.player?.play()
         }
         

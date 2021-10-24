@@ -61,7 +61,6 @@ func getCategories() {
 func getConfig() {
     let action = Actions.configAction.rawValue
     let endpoint = api.getEndpoint(creds, iptv, action)
-    
     func loginError() {
         LoginObservable.shared.status = "Login Error"
         setCurrentStep = .ConfigurationError

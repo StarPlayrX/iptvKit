@@ -31,7 +31,7 @@ public class CategoriesObservable: ObservableObject {
 //MARK: - 3
 public class ChannelsObservable: ObservableObject {
     static public var shared = ChannelsObservable()
-    @Published public var chan: Channels? = Channels()
+    @Published public var chan: [iptvChannel] = [iptvChannel]()
 
 }
 
@@ -45,7 +45,7 @@ public class PlayerObservable: ObservableObject {
     @Published public var pip: Bool = false
     @Published public var fullscreen: Bool = false
     @Published public var reset: Bool = false
-    @Published public var previousURL: URL = URL(string:"http://localhost.m3u8")!
+    @Published public var previousURL: String = "previousUrlString"
     @Published public var previousStreamID: Int? = -1
     @Published public var previousCategoryID: String? = "-Cat"
 
