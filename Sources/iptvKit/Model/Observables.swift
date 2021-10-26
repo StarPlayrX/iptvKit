@@ -7,6 +7,7 @@
 
 import Foundation
 import AVKit
+import Combine
 
 //MARK: - 1
 public class LoginObservable: ObservableObject {
@@ -55,5 +56,22 @@ public class PlayerObservable: ObservableObject {
     @Published public var channelName: String = ""
     @Published public var imageURL: String = ""
     @Published public var allowPlayback: Bool = false
+
+}
+
+
+
+public class PlayerItemObserver {
+
+    @Published public var currentStatus: AVPlayer.TimeControlStatus?
+    public var itemObservation: AnyCancellable?
+
+    public init(player: AVPlayer) {
+
+        itemObservation = player.publisher(for: \.timeControlStatus).sink { newStatus in
+            print(newStatus.rawValue)
+        }
+
+    }
 
 }
