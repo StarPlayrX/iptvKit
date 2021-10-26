@@ -50,6 +50,8 @@ public class PlayerObservable: ObservableObject {
     @Published public var previousCategoryID: String? = "-Cat"
 
     @Published public var streamID: String = ""
+    @Published public var lastStreamID: String = ""
+
     @Published public var channelName: String = ""
     @Published public var imageURL: String = ""
     @Published public var allowPlayback: Bool = false

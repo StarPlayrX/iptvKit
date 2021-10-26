@@ -156,7 +156,7 @@ public func getNowPlayingEpg(channelz: Channels?) {
     let endpoint = api.getNowPlayingEndpoint()
     rest.getRequest(endpoint: endpoint) { (programguide) in
         guard let programguide = programguide else {
-            print("getNowPlayingEpg Error")
+            //print("getNowPlayingEpg Error")
             return
         }
         
