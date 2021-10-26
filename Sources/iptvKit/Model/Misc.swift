@@ -11,7 +11,6 @@ import AVKit
 
 public func setupVideoController(_ plo: PlayerObservable) {
     
-    plo.videoController.requiresLinearPlayback = false
     plo.videoController.showsTimecodes = false
     plo.videoController.showsPlaybackControls = true
     plo.videoController.requiresLinearPlayback = false
@@ -25,9 +24,7 @@ public func setupVideoController(_ plo: PlayerObservable) {
             plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
         #endif
     }
-    
-    plo.videoController.player?.appliesMediaSelectionCriteriaAutomatically = true
-    plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
+
     plo.videoController.view.backgroundColor = UIColor.clear
     
     commandCenter(plo)

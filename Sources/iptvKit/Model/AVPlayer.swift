@@ -42,14 +42,7 @@ public struct AVPlayerView: UIViewControllerRepresentable {
         Coordinator()
     }
     
-    public func updateUIViewController(_ videoController: AVPlayerViewController, context: Context) {
-        if #available(iOS 15.0, *) {
-            #if !targetEnvironment(macCatalyst)
-            plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
-            plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
-            #endif
-        }
-    }
+    public func updateUIViewController(_ videoController: AVPlayerViewController, context: Context) {}
     
     
     func getQueryStringParameter(url: String, param: String) -> String? {
@@ -62,6 +55,21 @@ public struct AVPlayerView: UIViewControllerRepresentable {
         
         if url.absoluteString != plo.previousURL {
             plo.previousURL = url.absoluteString
+
+            plo.videoController.player?.externalPlaybackVideoGravity = .resizeAspectFill
+            plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
+            plo.videoController.player?.usesExternalPlaybackWhileExternalScreenIsActive = true
+            plo.videoController.player?.appliesMediaSelectionCriteriaAutomatically = true
+            plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
+            plo.videoController.player?.allowsExternalPlayback = true
+            
+            #if targetEnvironment(macCatalyst)
+                plo.videoController.player?.allowsAirPlayVideo = true
+                plo.videoController.player?.usesAirPlayVideoWhileAirPlayScreenIsActive = true
+            #endif
+            
+ 
+            
             plo.videoController.player?.replaceCurrentItem(with: nil)
             plo.videoController.player?.currentItem?.automaticallyHandlesInterstitialEvents = true
             plo.videoController.player?.currentItem?.seekingWaitsForVideoCompositionRendering = true
@@ -72,9 +80,8 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 15, preferredTimescale: 1000)
             plo.videoController.player?.currentItem?.startsOnFirstEligibleVariant = true
             plo.videoController.player?.currentItem?.variantPreferences = .scalabilityToLosslessAudio
-            plo.videoController.player?.allowsExternalPlayback = true
-            plo.videoController.player?.externalPlaybackVideoGravity = .resizeAspectFill
-            
+    
+
             let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ]
             plo.videoController.player?.playImmediately(atRate: 1.0)
             
@@ -82,15 +89,18 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
             plo.videoController.player = AVPlayer(playerItem: playerItem)
             plo.videoController.player?.play()
-            plo.videoController.showsPlaybackControls = true
             plo.videoController.delegate = context.coordinator
-        }
-        
-        if #available(iOS 15.0, *) {
-            #if !targetEnvironment(macCatalyst)
-            plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
-            plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
-            #endif
+            plo.videoController.requiresLinearPlayback = false
+            plo.videoController.showsPlaybackControls = true
+            
+            if #available(iOS 15.0, *) {
+                #if !targetEnvironment(macCatalyst)
+                plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+                plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
+                #endif
+            }
+            
+
         }
         
         return plo.videoController
