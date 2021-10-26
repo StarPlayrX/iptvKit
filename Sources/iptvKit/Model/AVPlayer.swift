@@ -66,10 +66,10 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             plo.videoController.player?.currentItem?.automaticallyHandlesInterstitialEvents = true
             plo.videoController.player?.currentItem?.seekingWaitsForVideoCompositionRendering = true
             plo.videoController.player?.currentItem?.appliesPerFrameHDRDisplayMetadata = true
-            plo.videoController.player?.currentItem?.preferredForwardBufferDuration = 0
+            plo.videoController.player?.currentItem?.preferredForwardBufferDuration = 15
             plo.videoController.player?.currentItem?.automaticallyPreservesTimeOffsetFromLive = true
             plo.videoController.player?.currentItem?.canUseNetworkResourcesForLiveStreamingWhilePaused = false
-            plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 0, preferredTimescale: 1000)
+            plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 15, preferredTimescale: 1000)
             plo.videoController.player?.currentItem?.startsOnFirstEligibleVariant = true
             plo.videoController.player?.currentItem?.variantPreferences = .scalabilityToLosslessAudio
             plo.videoController.player?.allowsExternalPlayback = true
@@ -95,47 +95,4 @@ public struct AVPlayerView: UIViewControllerRepresentable {
         
         return plo.videoController
     }
-        
-      
-  
-    
-    func skipForward(_ videoController: AVPlayerViewController ) {
-        let seekDuration: Double = 10
-        videoController.player?.pause()
-        
-        guard
-            let player = videoController.player
-        else {
-            return
-        }
-        
-        var playerCurrentTime = CMTimeGetSeconds( player.currentTime() )
-        playerCurrentTime += seekDuration
-        
-        let time: CMTime = CMTimeMake(value: Int64(playerCurrentTime * 1000 as Double), timescale: 1000)
-        videoController.player?.seek(to: time)
-        videoController.player?.play()
-    }
-    
-    func skipBackward(_ videoController: AVPlayerViewController ) {
-        let seekDuration: Double = 10
-        videoController.player?.pause()
-        
-        guard
-            let player = videoController.player
-        else {
-            return
-        }
-        
-        var playerCurrentTime = CMTimeGetSeconds( player.currentTime() )
-        playerCurrentTime -= seekDuration
-        
-        let time: CMTime = CMTimeMake(value: Int64(playerCurrentTime * 1000 as Double), timescale: 1000)
-        videoController.player?.seek(to: time)
-        videoController.player?.play()
-    }
-    
 }
-
-
-

@@ -7,6 +7,7 @@
 
 import Foundation
 import MediaPlayer
+import AVKit
 
 public func setupVideoController(_ plo: PlayerObservable) {
     
@@ -88,20 +89,78 @@ func commandCenter(_ plo: PlayerObservable) {
     
     let commandCenter = MPRemoteCommandCenter.shared()
     
+    
+    func skipForward(_ videoController: AVPlayerViewController ) {
+       let seekDuration: Double = 10
+       videoController.player?.pause()
+       
+       guard
+           let player = videoController.player
+       else {
+           return
+       }
+       
+       var playerCurrentTime = CMTimeGetSeconds( player.currentTime() )
+       playerCurrentTime += seekDuration
+       
+       let time: CMTime = CMTimeMake(value: Int64(playerCurrentTime * 1000 as Double), timescale: 1000)
+       videoController.player?.seek(to: time)
+       videoController.player?.play()
+    }
+
+    func skipBackward(_ videoController: AVPlayerViewController ) {
+       let seekDuration: Double = 10
+       videoController.player?.pause()
+       
+       guard
+           let player = videoController.player
+       else {
+           return
+       }
+       
+       var playerCurrentTime = CMTimeGetSeconds( player.currentTime() )
+       playerCurrentTime -= seekDuration
+       
+       let time: CMTime = CMTimeMake(value: Int64(playerCurrentTime * 1000 as Double), timescale: 1000)
+       videoController.player?.seek(to: time)
+       videoController.player?.play()
+    }
+
+    
     commandCenter.accessibilityActivate()
     
     commandCenter.playCommand.addTarget(handler: { (event) in
         plo.videoController.player?.play()
+        print("play")
         return MPRemoteCommandHandlerStatus.success}
     )
     
     commandCenter.pauseCommand.addTarget(handler: { (event) in
         plo.videoController.player?.pause()
+        print("pause")
         return MPRemoteCommandHandlerStatus.success}
     )
     
     commandCenter.togglePlayPauseCommand.addTarget(handler: { (event) in
         plo.videoController.player?.rate == 1 ? plo.videoController.player?.pause() : plo.videoController.player?.play()
+        print("toggle")
+
         return MPRemoteCommandHandlerStatus.success}
     )
+    
+    commandCenter.skipBackwardCommand.addTarget(handler: { (event) in
+        skipBackward(plo.videoController)
+        print("seekBackwardCommand")
+        return MPRemoteCommandHandlerStatus.success}
+    )
+        
+    commandCenter.skipForwardCommand.addTarget(handler: { (event) in
+        skipForward(plo.videoController)
+        print("seekForwardCommand")
+
+        return MPRemoteCommandHandlerStatus.success}
+    )
+    
+   
 }
+
