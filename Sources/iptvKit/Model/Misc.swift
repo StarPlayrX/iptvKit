@@ -19,11 +19,10 @@ public func setupVideoController(_ plo: PlayerObservable) {
     plo.videoController.updatesNowPlayingInfoCenter = false
     plo.videoController.player = AVPlayer(playerItem: nil)
     
-    if #available(iOS 15.0, *) {
-        #if !targetEnvironment(macCatalyst)
-            plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
-        #endif
+    if #available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *) {
+        plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
     }
+
 
     plo.videoController.view.backgroundColor = UIColor.clear
     

@@ -54,34 +54,26 @@ public struct AVPlayerView: UIViewControllerRepresentable {
     public func makeUIViewController(context: Context) -> AVPlayerViewController {
         
         if url.absoluteString != plo.previousURL {
+            print(url.absoluteString)
             plo.previousURL = url.absoluteString
-
             plo.videoController.player?.externalPlaybackVideoGravity = .resizeAspectFill
             plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
             plo.videoController.player?.usesExternalPlaybackWhileExternalScreenIsActive = true
             plo.videoController.player?.appliesMediaSelectionCriteriaAutomatically = true
             plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
             plo.videoController.player?.allowsExternalPlayback = true
-            
-            #if targetEnvironment(macCatalyst)
-                plo.videoController.player?.allowsAirPlayVideo = true
-                plo.videoController.player?.usesAirPlayVideoWhileAirPlayScreenIsActive = true
-            #endif
-            
- 
-            
             plo.videoController.player?.replaceCurrentItem(with: nil)
             plo.videoController.player?.currentItem?.automaticallyHandlesInterstitialEvents = true
             plo.videoController.player?.currentItem?.seekingWaitsForVideoCompositionRendering = true
             plo.videoController.player?.currentItem?.appliesPerFrameHDRDisplayMetadata = true
-            plo.videoController.player?.currentItem?.preferredForwardBufferDuration = 15
+            plo.videoController.player?.currentItem?.preferredForwardBufferDuration = 0
             plo.videoController.player?.currentItem?.automaticallyPreservesTimeOffsetFromLive = true
-            plo.videoController.player?.currentItem?.canUseNetworkResourcesForLiveStreamingWhilePaused = false
-            plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 15, preferredTimescale: 1000)
+            plo.videoController.player?.currentItem?.canUseNetworkResourcesForLiveStreamingWhilePaused = true
+            plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 0, preferredTimescale: 1000)
             plo.videoController.player?.currentItem?.startsOnFirstEligibleVariant = true
             plo.videoController.player?.currentItem?.variantPreferences = .scalabilityToLosslessAudio
-    
-
+            plo.videoController.player?.automaticallyWaitsToMinimizeStalling = false
+            
             let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ]
             plo.videoController.player?.playImmediately(atRate: 1.0)
             
@@ -92,15 +84,8 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             plo.videoController.delegate = context.coordinator
             plo.videoController.requiresLinearPlayback = false
             plo.videoController.showsPlaybackControls = true
-            
-            if #available(iOS 15.0, *) {
-                #if !targetEnvironment(macCatalyst)
-                plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
-                plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
-                #endif
-            }
-            
-
+            plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+            plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
         }
         
         return plo.videoController
