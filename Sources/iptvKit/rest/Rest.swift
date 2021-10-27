@@ -92,24 +92,28 @@ public class Rest: NSObject, URLSessionDelegate {
         task.resume()
     }
     
-    public func textSync(url: URL?) -> URL?  {
+    /* app.get("eHRybS5tM3U4") { req -> String in
+           "aGxzeC5tM3U4" //hlsx.m3u8
+       } */
+    
+    public func textSync(url: URL?) -> String?  {
 
         //MARK: - for Sync
         let semaphore = DispatchSemaphore(value: 0)
         
-        guard let url = url else { return url }
+        guard let url = url else { return nil }
         
         var urlReq = URLRequest(url: url)
-        var retStr = url
+        var retStr = ""
         urlReq.httpMethod = "GET"
         urlReq.timeoutInterval = TimeInterval(10)
         urlReq.cachePolicy = .returnCacheDataElseLoad
-        let task = URLSession.shared.dataTask(with: urlReq ) { ( _, response, _ ) in
+        let task = URLSession.shared.dataTask(with: urlReq ) { ( data, _, _ ) in
             guard
-                let resp = response?.url
+                let data = data
             else { return }
             
-            retStr = resp
+            retStr = String(decoding: data, as: UTF8.self)
             
             //MARK: - for Sync
             semaphore.signal()

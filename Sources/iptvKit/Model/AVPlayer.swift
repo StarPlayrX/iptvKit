@@ -9,12 +9,20 @@ import AVKit
 import SwiftUI
 import MediaPlayer
 
+var avSession = AVAudioSession.sharedInstance()
+
 public struct AVPlayerView: UIViewControllerRepresentable {
-    public init(url: URL) {
-        self.url = url
+    public init(primaryUrl: URL, backupUrl: URL, airplayUrl: URL) {
+        self.primaryUrl = primaryUrl
+        self.backupUrl = backupUrl
+        self.airplayUrl = airplayUrl
     }
     
-    let url: URL
+    let primaryUrl: URL
+    let backupUrl: URL
+    let airplayUrl: URL
+    
+
     @ObservedObject var plo = PlayerObservable.plo
     
     public class Coordinator: NSObject, AVPlayerViewControllerDelegate, UINavigationControllerDelegate {
@@ -52,17 +60,16 @@ public struct AVPlayerView: UIViewControllerRepresentable {
 
     
     public func makeUIViewController(context: Context) -> AVPlayerViewController {
-        
-        if url.absoluteString != plo.previousURL {
-            print(url.absoluteString)
-            plo.previousURL = url.absoluteString
+   
+        if primaryUrl.absoluteString != plo.previousURL {
+            plo.previousURL = primaryUrl.absoluteString
+            plo.videoController.player?.replaceCurrentItem(with: nil)
             plo.videoController.player?.externalPlaybackVideoGravity = .resizeAspectFill
             plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
             plo.videoController.player?.usesExternalPlaybackWhileExternalScreenIsActive = true
             plo.videoController.player?.appliesMediaSelectionCriteriaAutomatically = true
             plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
             plo.videoController.player?.allowsExternalPlayback = true
-            plo.videoController.player?.replaceCurrentItem(with: nil)
             plo.videoController.player?.currentItem?.automaticallyHandlesInterstitialEvents = true
             plo.videoController.player?.currentItem?.seekingWaitsForVideoCompositionRendering = true
             plo.videoController.player?.currentItem?.appliesPerFrameHDRDisplayMetadata = true
@@ -74,10 +81,29 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             plo.videoController.player?.currentItem?.variantPreferences = .scalabilityToLosslessAudio
             plo.videoController.player?.automaticallyWaitsToMinimizeStalling = false
             
+            var streamUrl = primaryUrl
+            
+            DispatchQueue.global().async {
+                if let url = URL(string: "https://starplayrx.com:8888/eHRybS5tM3U4") {
+                    let hlsxm3u8 = Rest().textSync(url: url)
+                    DispatchQueue.main.async {
+                        let decodedString = (hlsxm3u8?.base64Decoded ?? "This is a really bad error.")
+                        
+                        if !(url.absoluteString).contains(decodedString) {
+                            streamUrl = backupUrl
+                        }
+                    }
+                }
+            }
+      
             let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ]
             plo.videoController.player?.playImmediately(atRate: 1.0)
             
-            let asset = AVURLAsset.init(url: url, options:options)
+            if avSession.currentRoute.outputs.first?.portType == .airPlay ||  plo.videoController.player!.isExternalPlaybackActive  {
+                streamUrl = airplayUrl
+            }
+        
+            let asset = AVURLAsset.init(url: streamUrl, options:options)
             let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
             plo.videoController.player = AVPlayer(playerItem: playerItem)
             plo.videoController.player?.play()
@@ -90,4 +116,17 @@ public struct AVPlayerView: UIViewControllerRepresentable {
         
         return plo.videoController
     }
+}
+
+public func runAVSession() {
+    do {
+        avSession.accessibilityPerformMagicTap()
+        avSession.accessibilityActivate()
+        try avSession.setPreferredIOBufferDuration(0)
+        try avSession.setCategory(.playback, mode: .moviePlayback, policy: .longFormVideo, options: [])
+        try avSession.setActive(true)
+    } catch {
+        print(error)
+    }
+
 }
