@@ -67,7 +67,7 @@ public func setnowPlayingInfo(channelName:String, image: UIImage?) {
     nowPlayingInfo[MPMediaItemPropertyArtist] = title
     nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = "IPTVee"
     nowPlayingInfo[MPMediaItemPropertyMediaType] = 1
-    nowPlayingInfo[MPNowPlayingInfoPropertyIsLiveStream] = true
+    nowPlayingInfo[MPNowPlayingInfoPropertyIsLiveStream] = false
     nowPlayingInfo[MPMediaItemPropertyAlbumTitle] =  PlayerObservable.plo.miniEpg.first?.start.toDate()?.toString()
     nowPlayingInfo[MPNowPlayingInfoPropertyDefaultPlaybackRate] = 1.0
     

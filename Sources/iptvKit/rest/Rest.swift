@@ -38,26 +38,21 @@ public class Rest: NSObject, URLSessionDelegate {
         task.resume()
     }
     
-    public func textAsync(url: String, TextArrayHandler: @escaping TextArrayHandler)  {
+    public func textAsync(url: String, TextHandler: @escaping TextHandler)  {
 
-        guard let url = URL(string: url) else { TextArrayHandler(["error1"]); return}
-        
-        var array = [String]()
-        
+        guard let url = URL(string: url) else { TextHandler("error1"); return}
+                
         var urlReq = URLRequest(url: url)
         urlReq.httpMethod = "GET"
-        urlReq.timeoutInterval = TimeInterval(10)
+        urlReq.timeoutInterval = TimeInterval(0)
         urlReq.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-        let task = URLSession.shared.dataTask(with: urlReq ) { ( data, resp, errr ) in
+        let task = URLSession.shared.dataTask(with: urlReq ) { ( data, _, _ ) in
             guard
-                let d = data,
-                let text = String(data: d, encoding: .utf8),
-                let respUrl = resp?.url
-            else { TextArrayHandler(["error2"]); return }
+                let data = data,
+                let text = String(data: data, encoding: .utf8)
+            else { TextHandler("error2"); return }
             
-            array.append(text)
-            array.append(respUrl.absoluteString)
-            TextArrayHandler(array)
+            TextHandler(text)
         }
         
         task.resume()
@@ -96,36 +91,6 @@ public class Rest: NSObject, URLSessionDelegate {
            "aGxzeC5tM3U4" //hlsx.m3u8
        } */
     
-    public func textSync(url: URL?) -> String?  {
-
-        //MARK: - for Sync
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        guard let url = url else { return nil }
-        
-        var urlReq = URLRequest(url: url)
-        var retStr = ""
-        urlReq.httpMethod = "GET"
-        urlReq.timeoutInterval = TimeInterval(10)
-        urlReq.cachePolicy = .returnCacheDataElseLoad
-        let task = URLSession.shared.dataTask(with: urlReq ) { ( data, _, _ ) in
-            guard
-                let data = data
-            else { return }
-            
-            retStr = String(decoding: data, as: UTF8.self)
-            
-            //MARK: - for Sync
-            semaphore.signal()
-        }
-        
-        task.resume()
-        
-        //MARK: - for Sync
-        _ = semaphore.wait(timeout: .distantFuture)
-        
-        return retStr
-    }
 
     public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         guard let serverTrust = challenge.protectionSpace.serverTrust else { return }

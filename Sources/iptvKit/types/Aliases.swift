@@ -7,7 +7,6 @@
 import Foundation
 
 public typealias TextHandler = (_ text:String?) -> Void
-public typealias TextArrayHandler = (_ text:[String]) -> Void
 
 public typealias DataHandler = (_ data:Data?) -> Void
 public typealias VideoHandler = (_ data:Data) -> Void

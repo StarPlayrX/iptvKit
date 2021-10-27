@@ -87,7 +87,7 @@ func getConfig() {
     }
 }
 
-public func getShortEpg(streamId: String, channelName: String, imageURL: String) {
+public func getShortEpg(streamId: Int, channelName: String, imageURL: String) {
     let action = Actions.getshortEpg.rawValue
     let endpoint = api.getEpgEndpoint(creds, iptv, action, streamId)
     
