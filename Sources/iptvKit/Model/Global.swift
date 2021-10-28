@@ -30,6 +30,7 @@ public var shortEpg: iptvShortEpg? = nil
 
 
 public let userSettings = "userSettings"
+public let userSwitches = "userSwitches"
 
 public func saveUserDefaults() {
     UserDefaults.standard.set(try? PropertyListEncoder().encode(LoginObservable.shared.config), forKey:userSettings)

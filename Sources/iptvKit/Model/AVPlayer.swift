@@ -9,7 +9,7 @@ import AVKit
 import SwiftUI
 import MediaPlayer
 
-var avSession = AVAudioSession.sharedInstance()
+public var avSession = AVAudioSession.sharedInstance()
 
 public struct AVPlayerView: UIViewControllerRepresentable {
     public init(streamId: Int, hlsxPort: UInt16) {
@@ -21,12 +21,11 @@ public struct AVPlayerView: UIViewControllerRepresentable {
     let hlsxPort: UInt16
     let lo = LoginObservable.shared
     let po = PlayerObservable.plo
-
+    
     @ObservedObject var plo = PlayerObservable.plo
     
     public class Coordinator: NSObject, AVPlayerViewControllerDelegate, UINavigationControllerDelegate {
         let po = PlayerObservable.plo
-
         
         public func playerViewController(_ playerViewController: AVPlayerViewController, willBeginFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator) {
             po.fullscreen = true
@@ -51,45 +50,73 @@ public struct AVPlayerView: UIViewControllerRepresentable {
     
     public func updateUIViewController(_ videoController: AVPlayerViewController, context: Context) {}
     
-    
     func getQueryStringParameter(url: String, param: String) -> String? {
-      guard let url = URLComponents(string: url) else { return nil }
-      return url.queryItems?.first(where: { $0.name == param })?.value
+        guard let url = URLComponents(string: url) else { return nil }
+        return url.queryItems?.first(where: { $0.name == param })?.value
     }
-
     
     public func makeUIViewController(context: Context) -> AVPlayerViewController {
-   
-        if streamId != po.previousStreamID {
+
+         if streamId != po.previousStreamID {
             po.previousStreamID = streamId
-            
             plo.videoController.player?.replaceCurrentItem(with: nil)
-       
-            
-            plo.videoController.showsPlaybackControls = false
             plo.videoController.delegate = context.coordinator
             plo.videoController.requiresLinearPlayback = false
             plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
-            
+             plo.videoController.accessibilityPerformMagicTap()
             let good: String = lo.username
             let time: String = lo.password
             let todd: String = lo.config?.serverInfo.url ?? "primestreams.tv"
             let boss: String = lo.config?.serverInfo.port ?? "826"
             
             let primaryUrl = URL(string:"https://starplayrx.com:8888/\(todd)/\(boss)/\(good)/\(time)/\(streamId)/hlsx.m3u8")
-            let backupUrl = URL(string:"http://localhost:\(hlsxPort)/\(streamId)/local.m3u8")
+            let backupUrl = URL(string:"http://localhost:\(hlsxPort)/\(streamId)/hlsx.m3u8")
             let airplayUrl = URL(string:"http://\(todd):\(boss)/live/\(good)/\(time)/\(streamId).m3u8")
-
+            
             guard
                 let primaryUrl = primaryUrl,
                 let backupUrl = backupUrl,
                 let airplayUrl = airplayUrl
-
+                    
             else { return  plo.videoController }
-
-            var streamUrl = primaryUrl
-
-        
+                        
+            func playUrl(_ streamUrl: URL) {
+                
+                let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ]
+                
+                let playNowUrl = avSession.currentRoute.outputs.first?.portType == .airPlay || plo.videoController.player!.isExternalPlaybackActive ? airplayUrl : streamUrl
+                
+                if playNowUrl == primaryUrl {
+                    plo.nowPlayingUrl = "Primary, streamId: \(streamId), port 8888"
+                } else if playNowUrl == backupUrl {
+                    plo.nowPlayingUrl = "Secondary, streamId: \(streamId), port \(hlsxPort)"
+                } else {
+                    plo.nowPlayingUrl = "Ternary, streamId: \(streamId), port \(boss)"
+                }
+                
+                plo.streamID = streamId
+                
+                let asset = AVURLAsset.init(url: playNowUrl, options:options)
+                let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
+                plo.videoController.player?.replaceCurrentItem(with: playerItem)
+                plo.videoController.player?.playImmediately(atRate: 1.0)
+            }
+            
+            func starPlayrHLSx() {
+                rest.textAsync(url: "https://starplayrx.com:8888/eHRybS5tM3U4") { hlsxm3u8 in
+                    let decodedString = (hlsxm3u8?.base64Decoded ?? "This is a really bad error 1.")
+                    primaryUrl.absoluteString.contains(decodedString) ? playUrl(primaryUrl) : localHLSx()
+                }
+            }
+            
+            func localHLSx() {
+                rest.textAsync(url: "http://localhost:\(hlsxPort)/eHRybS5tM3U4/") { hlsxm3u8 in
+                    let decodedString = (hlsxm3u8?.base64Decoded ?? "This is a really bad error 2.")
+                    backupUrl.absoluteString.contains(decodedString) ? playUrl(backupUrl) : playUrl(airplayUrl)
+                }
+            }
+            
+            starPlayrHLSx()
             
             plo.videoController.player?.externalPlaybackVideoGravity = .resizeAspectFill
             plo.videoController.player?.preventsDisplaySleepDuringVideoPlayback = true
@@ -106,41 +133,14 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             plo.videoController.player?.currentItem?.configuredTimeOffsetFromLive = .init(seconds: 60, preferredTimescale: 600)
             plo.videoController.player?.currentItem?.startsOnFirstEligibleVariant = true
             plo.videoController.player?.currentItem?.variantPreferences = .scalabilityToLosslessAudio
-            plo.videoController.player?.automaticallyWaitsToMinimizeStalling = false
+             
+         //    if SettingsObservable.shared. {
+           //      plo.videoController.player?.pause()
+             //}
+             
+            plo.videoController.player?.automaticallyWaitsToMinimizeStalling = true
             plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
-            
-            
-            rest.textAsync(url: "https://starplayrx.com:8888/eHRybS5tM3U4") { hlsxm3u8 in
-               
-                
-                DispatchQueue.main.async {
-                    plo.videoController.showsPlaybackControls = true
-                    
-                    let decodedString = (hlsxm3u8?.base64Decoded ?? "This is a really bad error.")
-                    
-                    if !(streamUrl.absoluteString).contains(decodedString) {
-                        streamUrl = backupUrl
-                    }
-                    
-                    let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ]
-                    plo.videoController.player?.playImmediately(atRate: 1.0)
-                    
-                    if avSession.currentRoute.outputs.first?.portType == .airPlay || plo.videoController.player!.isExternalPlaybackActive  {
-                        streamUrl = airplayUrl
-                    }
-                
-                    print(streamUrl)
-                    
-                    let asset = AVURLAsset.init(url: streamUrl, options:options)
-                    let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
-                    plo.videoController.player = AVPlayer(playerItem: playerItem)
-                    plo.videoController.player?.playImmediately(atRate: 1.0)
-       
-                }
-            }
-         
-            
-  
+            plo.videoController.showsPlaybackControls = true
         }
         
         return plo.videoController
@@ -157,5 +157,5 @@ public func runAVSession() {
     } catch {
         print(error)
     }
-
+    
 }
