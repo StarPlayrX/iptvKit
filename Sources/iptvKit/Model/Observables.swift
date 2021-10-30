@@ -21,6 +21,8 @@ public class LoginObservable: ObservableObject {
     @Published public var port: String = ""
     @Published public var username: String = ""
     @Published public var password: String = ""
+    @Published public var showingLogin: Bool = false
+
 }
 //MARK: - 2
 public class CategoriesObservable: ObservableObject {
