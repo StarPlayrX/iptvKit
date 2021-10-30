@@ -10,6 +10,7 @@ import SwiftUI
 import MediaPlayer
 
 public var avSession = AVAudioSession.sharedInstance()
+public var playerDeck = [AVPlayerViewController]()
 
 public struct AVPlayerView: UIViewControllerRepresentable {
     public init(streamId: Int, hlsxPort: UInt16) {
@@ -19,11 +20,10 @@ public struct AVPlayerView: UIViewControllerRepresentable {
     
     let streamId: Int
     let hlsxPort: UInt16
-    let lo = LoginObservable.shared
-    let po = PlayerObservable.plo
     
     @ObservedObject var plo = PlayerObservable.plo
-    
+    @ObservedObject var lo = LoginObservable.shared
+
     public class Coordinator: NSObject, AVPlayerViewControllerDelegate, UINavigationControllerDelegate {
         let po = PlayerObservable.plo
         
@@ -48,7 +48,11 @@ public struct AVPlayerView: UIViewControllerRepresentable {
         Coordinator()
     }
     
-    public func updateUIViewController(_ videoController: AVPlayerViewController, context: Context) {}
+    public func updateUIViewController(_ videoController: AVPlayerViewController, context: Context) {
+        
+        plo.videoController.player?.pause()
+
+    }
     
     func getQueryStringParameter(url: String, param: String) -> String? {
         guard let url = URLComponents(string: url) else { return nil }
@@ -56,10 +60,18 @@ public struct AVPlayerView: UIViewControllerRepresentable {
     }
     
     public func makeUIViewController(context: Context) -> AVPlayerViewController {
-
-         if streamId != po.previousStreamID {
-            po.previousStreamID = streamId
-            plo.videoController.player?.replaceCurrentItem(with: nil)
+             plo.previousStreamID = streamId
+        
+        for i in playerDeck {
+            i.player?.pause()
+        }
+        
+        plo.videoController = AVPlayerViewController()
+        plo.videoController.player = AVPlayer()
+        playerDeck.append(plo.videoController)
+        
+     
+      
             plo.videoController.delegate = context.coordinator
             plo.videoController.requiresLinearPlayback = false
             plo.videoController.canStartPictureInPictureAutomaticallyFromInline = true
@@ -133,8 +145,8 @@ public struct AVPlayerView: UIViewControllerRepresentable {
              
             plo.videoController.player?.automaticallyWaitsToMinimizeStalling = true
             plo.videoController.player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
+            plo.videoController.player?.play()
             plo.videoController.showsPlaybackControls = true
-        }
         
         return plo.videoController
     }
