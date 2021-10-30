@@ -81,25 +81,18 @@ public struct AVPlayerView: UIViewControllerRepresentable {
             else { return  plo.videoController }
                         
             func playUrl(_ streamUrl: URL) {
+                DispatchQueue.main.async {
+                    let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ]
+                    
+                    let playNowUrl = avSession.currentRoute.outputs.first?.portType == .airPlay || plo.videoController.player!.isExternalPlaybackActive ? airplayUrl : streamUrl
                 
-                let options = [AVURLAssetPreferPreciseDurationAndTimingKey : true, AVURLAssetAllowsCellularAccessKey : true, AVURLAssetAllowsExpensiveNetworkAccessKey : true, AVURLAssetAllowsConstrainedNetworkAccessKey : true, AVURLAssetReferenceRestrictionsKey: true ]
-                
-                let playNowUrl = avSession.currentRoute.outputs.first?.portType == .airPlay || plo.videoController.player!.isExternalPlaybackActive ? airplayUrl : streamUrl
-                
-                if playNowUrl == primaryUrl {
-                    plo.nowPlayingUrl = "Primary, streamId: \(streamId), port 8888"
-                } else if playNowUrl == backupUrl {
-                    plo.nowPlayingUrl = "Secondary, streamId: \(streamId), port \(hlsxPort)"
-                } else {
-                    plo.nowPlayingUrl = "Ternary, streamId: \(streamId), port \(boss)"
+                    plo.streamID = streamId
+                    
+                    let asset = AVURLAsset.init(url: playNowUrl, options:options)
+                    let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
+                    plo.videoController.player?.replaceCurrentItem(with: playerItem)
+                    plo.videoController.player?.playImmediately(atRate: 1.0)
                 }
-                
-                plo.streamID = streamId
-                
-                let asset = AVURLAsset.init(url: playNowUrl, options:options)
-                let playerItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: ["duration"])
-                plo.videoController.player?.replaceCurrentItem(with: playerItem)
-                plo.videoController.player?.playImmediately(atRate: 1.0)
             }
             
             func starPlayrHLSx() {

@@ -145,18 +145,18 @@ func getChannels() {
 public func getNowPlayingHelper() {
     if let channels = try? decoder.decode(Channels.self, from: channelData) {
         ChannelsObservable.shared.chan = channels
-        getNowPlayingEpg(channelz: ChannelsObservable.shared.chan)
+        getNowPlayingEpg()
     }
 }
 
-public func getNowPlayingEpg(channelz: Channels?) {
+public func getNowPlayingEpg() {
     
-    guard var chnlz = channelz else { return }
-
+    var chnlz = ChannelsObservable.shared.chan
+    
     let endpoint = api.getNowPlayingEndpoint()
     rest.getRequest(endpoint: endpoint) { (programguide) in
         guard let programguide = programguide else {
-            //print("getNowPlayingEpg Error")
+            print("getNowPlayingEpg Error")
             return
         }
         
