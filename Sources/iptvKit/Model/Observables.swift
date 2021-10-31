@@ -44,6 +44,9 @@ public class PlayerObservable: ObservableObject {
     @Published public var miniEpg: [EpgListing] = []
     @Published public var nowPlayingEpg: [String: NowPlayingValue]? = nil
 
+    @Published public var videoControllerToggle: Bool = false
+    @Published public var videoControllerA: AVPlayerViewController = AVPlayerViewController()
+    @Published public var videoControllerB: AVPlayerViewController = AVPlayerViewController()
     @Published public var videoController: AVPlayerViewController = AVPlayerViewController()
     @Published public var pip: Bool = false
     @Published public var fullscreen: Bool = false
