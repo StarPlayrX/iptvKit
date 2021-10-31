@@ -52,7 +52,7 @@ public class PlayerObservable: ObservableObject {
     @Published public var fullscreen: Bool = false
     
     @Published public var previousStreamID: Int = -2
-    @Published public var previousCategoryID: String? = "-Cat"
+    @Published public var previousCategoryID: String = ""
     
     @Published public var channelName: String = ""
     @Published public var imageURL: String = ""
