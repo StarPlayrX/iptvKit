@@ -9,20 +9,23 @@ import Foundation
 
 
 public func login(_ user: String,_ pass: String,_ host: String,_ port: String) {
-    LoginObservable.shared.status = ""
-    LoginObservable.shared.port = port.digits
     
-    guard let port = Int(LoginObservable.shared.port) else { return }
-    
-    awaitDone = false
-    LoginObservable.shared.status = "Logging In..."
-    
-    creds.username = user
-    creds.password = pass
-    iptv.host = host
-    iptv.port = port
-    
-    setCurrentStep = .config
+    DispatchQueue.main.async {
+        LoginObservable.shared.status = ""
+        LoginObservable.shared.port = port.digits
+        
+        guard let port = Int(LoginObservable.shared.port) else { return }
+        
+        awaitDone = false
+        LoginObservable.shared.status = "Logging In..."
+        
+        creds.username = user
+        creds.password = pass
+        iptv.host = host
+        iptv.port = port
+        
+        setCurrentStep = .config
+    }
 }
 
 enum Stepper {
