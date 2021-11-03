@@ -86,11 +86,14 @@ var setCurrentStep: Stepper = .start {
             
         case .finish:
             //done
-            awaitDone = false
+            awaitDone = true
             LoginObservable.shared.status = Status.Channels.rawValue
             LoginObservable.shared.isAutoSwitchCat = true
             LoginObservable.shared.showingLogin = false
             LoginObservable.shared.isLoggedIn = true
+            LoginObservable.shared.isLoginButtonDisabled = false
+
+
 
         default:
             awaitDone = false

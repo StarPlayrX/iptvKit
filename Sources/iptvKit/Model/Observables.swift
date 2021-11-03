@@ -22,6 +22,8 @@ public class LoginObservable: ObservableObject {
     @Published public var username: String = ""
     @Published public var password: String = ""
     @Published public var showingLogin: Bool = false
+    @Published public var isLoginButtonDisabled: Bool = false
+
 
 }
 //MARK: - 2
