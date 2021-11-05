@@ -42,18 +42,14 @@ func getCategories() {
                     } else {
                         catName.append(contentsOf: x)
                     }
-                    
                     catName += " "
                 }
-                
                 cats[i].categoryName = catName
                 cats[i].categoryName.removeLast()
-                
             }
         }
         
         if cats.count > 3 { cats.removeLast() }
-        
         awaitDone = true
     }
 }
@@ -134,7 +130,6 @@ func getChannels() {
         }
         
         channelData = data
-        
         getNowPlayingHelper()
         
         awaitDone = true
