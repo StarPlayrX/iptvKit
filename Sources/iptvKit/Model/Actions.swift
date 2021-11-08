@@ -7,7 +7,6 @@
 
 
 import Foundation
-import UIKit
 
 public enum Actions: String {
     case start = "start"
@@ -97,19 +96,19 @@ public func getShortEpg(streamId: Int, channelName: String, imageURL: String) {
             shortEpg = epg
             PlayerObservable.plo.miniEpg = shortEpg?.epgListings ?? []
             
-            DispatchQueue.global().async {
+           /*  DispatchQueue.global().async {
                 if let url = URL(string: imageURL) {
                     let data = try? Data(contentsOf: url)
                     DispatchQueue.main.async {
                         
-                        if let data = data, let image = UIImage(data: data), !channelName.isEmpty {
+                   if let data = data, let image = UIImage(data: data), !channelName.isEmpty {
                             setnowPlayingInfo(channelName: channelName, image: image)
                         } else if !channelName.isEmpty {
                             setnowPlayingInfo(channelName: channelName, image: nil)
                         }
                     }
                 }
-            }
+            } */
         }
     }
 }

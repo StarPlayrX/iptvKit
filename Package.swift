@@ -7,6 +7,7 @@ let package = Package(
     name: "iptvKit",
     platforms: [
         .iOS("15.0"),
+        .macOS("12.0")
        ],
 
     products: [

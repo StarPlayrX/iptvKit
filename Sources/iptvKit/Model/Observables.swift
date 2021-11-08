@@ -12,7 +12,7 @@ import Combine
 //MARK: - 1
 public class LoginObservable: ObservableObject {
     static public var shared = LoginObservable()
-    @Published public var status: String = "Update"
+    @Published public var status: String = ""
     @Published public var isLoggedIn: Bool = false
     @Published public var isAutoSwitchCat: Bool = false
     @Published public var isCatActive: Bool = false
@@ -23,7 +23,7 @@ public class LoginObservable: ObservableObject {
     @Published public var password: String = ""
     @Published public var showingLogin: Bool = false
     @Published public var isLoginButtonDisabled: Bool = false
-
+   
 
 }
 //MARK: - 2
@@ -37,7 +37,9 @@ public class CategoriesObservable: ObservableObject {
 public class ChannelsObservable: ObservableObject {
     static public var shared = ChannelsObservable()
     @Published public var chan: [iptvChannel] = [iptvChannel]()
-
+   
+  
+    
 }
 
 //MARK: - 4
@@ -46,10 +48,9 @@ public class PlayerObservable: ObservableObject {
     @Published public var miniEpg: [EpgListing] = []
     @Published public var nowPlayingEpg: [String: NowPlayingValue]? = nil
 
-    @Published public var videoControllerToggle: Bool = false
-    @Published public var videoControllerA: AVPlayerViewController = AVPlayerViewController()
-    @Published public var videoControllerB: AVPlayerViewController = AVPlayerViewController()
-    @Published public var videoController: AVPlayerViewController = AVPlayerViewController()
+    //@Published public var videoController: AVPlayerViewController = AVPlayerViewController()
+    //@Published public var videoController: AVPlayerView = AVPlayerView()
+
     @Published public var pip: Bool = false
     @Published public var fullscreen: Bool = false
     
@@ -63,6 +64,7 @@ public class PlayerObservable: ObservableObject {
 
     @Published public var nowPlayingUrl: String = ""
 }
+
 
 public class SettingsObservable: ObservableObject {
     static public var shared = SettingsObservable()
@@ -98,3 +100,4 @@ public func readPlayerSettings() {
     settings.stopWhenExitingPlayer = UserDefaults.standard.bool(forKey: "stopWhenExitingPlayer")
     settings.backgroundPlayback = UserDefaults.standard.bool(forKey: "backgroundPlayback")
 }
+

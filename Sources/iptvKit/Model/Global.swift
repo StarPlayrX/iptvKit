@@ -35,3 +35,9 @@ public let userSwitches = "userSwitches"
 public func saveUserDefaults() {
     UserDefaults.standard.set(try? PropertyListEncoder().encode(LoginObservable.shared.config), forKey:userSettings)
 }
+
+public class CurrentDevice {
+    public static let shared = CurrentDevice()
+    
+}
+

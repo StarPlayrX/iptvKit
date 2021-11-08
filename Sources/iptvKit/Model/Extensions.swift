@@ -48,47 +48,6 @@ public extension Date {
     }
 }
 
-// Reports if our device have a notch
-public extension UIDevice {
-    var hasNotch: Bool {
-        let bottom = UIApplication.shared.windows.filter {$0.isKeyWindow}.first?.safeAreaInsets.bottom ?? 0
-        return bottom > 0
-    }
-}
-
-
-extension UIImage {
-
-    func squareMe() -> UIImage {
-
-        var squareImage = self
-        let maxSize = max(self.size.height, self.size.width)
-        let squareSize = CGSize(width: maxSize, height: maxSize)
-
-        let dx = CGFloat((maxSize - self.size.width) / 2)
-        let dy = CGFloat((maxSize - self.size.height) / 2)
-
-        UIGraphicsBeginImageContext(squareSize)
-        var rect = CGRect(x: 0, y: 0, width: maxSize, height: maxSize)
-
-        if let context = UIGraphicsGetCurrentContext() {
-            context.setFillColor(UIColor.systemGray6.cgColor)
-            context.fill(rect)
-
-            rect = rect.insetBy(dx: dx, dy: dy)
-            self.draw(in: rect, blendMode: .normal, alpha: 1.0)
-
-            if let img = UIGraphicsGetImageFromCurrentImageContext() {
-                squareImage = img
-            }
-            UIGraphicsEndImageContext()
-
-        }
-
-        return squareImage
-    }
-}
-
 
 public extension Data {
     var bytes: [UInt8] {
