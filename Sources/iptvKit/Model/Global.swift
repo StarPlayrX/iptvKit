@@ -40,4 +40,3 @@ public class CurrentDevice {
     public static let shared = CurrentDevice()
     
 }
-
