@@ -267,31 +267,9 @@ public func getVideoOnDemandMoviesItems(categoryID: String) {
             return
         }
         
-        if let movieCategoryInfo = try? decoder.decode([MovieCategoryInfo].self, from: data) {
+        if let movieCategoryInfo = try? decoder.decode([MovieInfoElement].self, from: data) {
             MoviesObservable.shared.movieCatInfo = movieCategoryInfo
         }
     }
 }
-
-public func getVideoOnDemandMoviesInfo(vodID: String) {
-    let action = Actions.getVodInfo.rawValue
-    let endpoint = api.getMovieInfoEndpoint(creds, iptv, action, vodID)
-    
-    print(endpoint)
-    
-    
-    rest.getRequest(endpoint: endpoint) { (data) in
-        
-        guard let data = data else {
-            print("\(action) error")
-            return
-        }
-        
-        if let movieInfo = try? decoder.decode(MovieInfo.self, from: data) {
-            print(movieInfo)
-            MoviesObservable.shared.movieInfo = movieInfo
-        }
-    }
-}
-
 

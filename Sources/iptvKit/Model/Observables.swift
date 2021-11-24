@@ -113,8 +113,7 @@ public class MoviesCatObservable: ObservableObject {
 //MARK: - 11
 public class MoviesObservable: ObservableObject {
     static public var shared = MoviesObservable()
-    @Published public var movieCatInfo: [MovieCategoryInfo] = [MovieCategoryInfo]()
-    @Published public var movieInfo: MovieInfo?
+    @Published public var movieCatInfo: [MovieInfoElement] = [MovieInfoElement]()
 }
 
 

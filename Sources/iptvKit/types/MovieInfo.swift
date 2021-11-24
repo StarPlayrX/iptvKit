@@ -8,50 +8,67 @@
 import Foundation
 
 
-// MARK: - MovieInfo - get_vod_info&vod_id=444939
-public struct MovieInfo: Codable {
-    public let info: Info
-    public let movieData: MovieData
+// MARK: - MovieCategory - get_vod_categories
+public struct MovieCategory: Codable {
+    public let categoryID: String
+    public let categoryName: String
+    
+    enum CodingKeys: String, CodingKey {
+        case categoryID = "category_id"
+        case categoryName = "category_name"
+    }
+}
+
+// MARK: - MovieCategoryInfo
+public struct MovieCategoryInfo: Codable {
+    public let num: Int?
+    public let name: String
+    public let streamType: String?
+    public let streamID: Int
+    public let streamIcon: String?
+    public let rating5Based: Double?
+    public let added: String?
+    public let categoryID: String
+    public let containerExtension: ContainerExtension.RawValue
 
     enum CodingKeys: String, CodingKey {
-        case info
-        case movieData = "movie_data"
+        case num = "num"
+        case name = "name"
+        case streamType = "stream_type"
+        case streamID = "stream_id"
+        case streamIcon = "stream_icon"
+        case rating5Based = "rating_5based"
+        case added = "added"
+        case categoryID = "category_id"
+        case containerExtension = "container_extension"
     }
-    
-    // MARK: - Info
-    public struct Info: Codable {
-        public let movieImage: String
-        public let genre, plot, rating, releasedate: String
-        public let durationSecs: Int
-        public let duration: String
-        public let bitrate: Int
+}
 
-        enum CodingKeys: String, CodingKey {
-            case movieImage = "movie_image"
-            case genre = "genre"
-            case plot = "plot"
-            case rating = "rating"
-            case releasedate = "releasedate"
-            case durationSecs = "duration_secs"
-            case duration = "duration"
-            case bitrate = "bitrate"
-        }
-    }
-    
-    // MARK: - MovieData
-    public struct MovieData: Codable {
-        public let streamID: Int
-        public let name: String
-        public let added: String
-        public let categoryID: String
-        public let containerExtension: String
+// MARK: - MovieInfoElement
+public struct MovieInfoElement: Codable {
+    public let name: String
+    public let streamID: Int
+    public let streamIcon: String?
+    public let rating5Based: Double?
+    public let categoryID: String
+    public let containerExtension: ContainerExtension.RawValue
 
-        enum CodingKeys: String, CodingKey {
-            case streamID = "stream_id"
-            case name = "name"
-            case added = "added"
-            case categoryID = "category_id"
-            case containerExtension = "container_extension"
-        }
+    enum CodingKeys: String, CodingKey {
+        case name = "name"
+        case streamID = "stream_id"
+        case streamIcon = "stream_icon"
+        case rating5Based = "rating_5based"
+        case categoryID = "category_id"
+        case containerExtension = "container_extension"
     }
+}
+
+public enum ContainerExtension: String, Codable {
+    case wmp = "wmp"
+    case m4v = "m4v"
+    case hls = "hls"
+    case mov = "mov"
+    case avi = "avi"
+    case mkv = "mkv"
+    case mp4 = "mp4"
 }
