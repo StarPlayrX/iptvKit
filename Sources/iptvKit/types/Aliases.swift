@@ -7,12 +7,14 @@
 import Foundation
 
 public typealias TextHandler = (_ text:String?) -> Void
-
 public typealias DataHandler = (_ data:Data?) -> Void
 public typealias VideoHandler = (_ data:Data) -> Void
-
 public typealias Categories = [Category]
 public typealias Channels = [iptvChannel]
 public typealias ShortIPTVEpg = iptvShortEpg
 public typealias Creds = Credentials
 public typealias Config = Configuration?
+public typealias Series = [SeriesCategory]
+
+
+

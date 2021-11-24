@@ -23,8 +23,8 @@ public class LoginObservable: ObservableObject {
     @Published public var password: String = ""
     @Published public var showingLogin: Bool = true
     @Published public var isLoginButtonDisabled: Bool = false
-   
-
+    
+    
 }
 //MARK: - 2
 public class CategoriesObservable: ObservableObject {
@@ -37,8 +37,6 @@ public class CategoriesObservable: ObservableObject {
 public class ChannelsObservable: ObservableObject {
     static public var shared = ChannelsObservable()
     @Published public var chan: [iptvChannel] = [iptvChannel]()
-   
-  
     
 }
 
@@ -47,25 +45,18 @@ public class PlayerObservable: ObservableObject {
     static public var plo = PlayerObservable()
     @Published public var miniEpg: [EpgListing] = []
     @Published public var nowPlayingEpg: [String: NowPlayingValue]? = nil
-
-    //@Published public var videoController: AVPlayerViewController = AVPlayerViewController()
-    //@Published public var videoController: AVPlayerView = AVPlayerView()
-
     @Published public var pip: Bool = false
     @Published public var fullscreen: Bool = false
-    
     @Published public var previousStreamID: Int = -2
     @Published public var previousCategoryID: String = ""
     @Published public var previousSelection: String = ""
-
     @Published public var channelName: String = ""
     @Published public var imageURL: String = ""
     @Published public var streamID: Int = -1
-
     @Published public var nowPlayingUrl: String = ""
 }
 
-
+//MARK: - 5
 public class SettingsObservable: ObservableObject {
     static public var shared = SettingsObservable()
     @Published public var deviceHLSXtrem: Bool = true
@@ -77,9 +68,9 @@ public class SettingsObservable: ObservableObject {
     @Published public var backgroundPlayback: Bool = true
 }
 
+//MARK: - 6
 public func savePlayerSettings() {
-     let settings = SettingsObservable.shared
-
+    let settings = SettingsObservable.shared
     UserDefaults.standard.set(settings.deviceHLSXtrem, forKey: "deviceHLSXtrem")
     UserDefaults.standard.set(settings.deviceHLSApple, forKey: "deviceHLSApple")
     UserDefaults.standard.set(settings.airplayThirdParty, forKey: "airplayThirdParty")
@@ -89,9 +80,9 @@ public func savePlayerSettings() {
     UserDefaults.standard.set(settings.backgroundPlayback, forKey: "backgroundPlayback")
 }
 
+//MARK: - 7 (currently not in use)
 public func readPlayerSettings() {
-     let settings = SettingsObservable.shared
-
+    let settings = SettingsObservable.shared
     settings.deviceHLSXtrem = UserDefaults.standard.bool(forKey: "deviceHLSXtrem")
     settings.deviceHLSApple = UserDefaults.standard.bool(forKey: "deviceHLSApple")
     settings.airplayThirdParty = UserDefaults.standard.bool(forKey: "airplayThirdParty")
@@ -100,4 +91,31 @@ public func readPlayerSettings() {
     settings.stopWhenExitingPlayer = UserDefaults.standard.bool(forKey: "stopWhenExitingPlayer")
     settings.backgroundPlayback = UserDefaults.standard.bool(forKey: "backgroundPlayback")
 }
+
+//MARK: - 8
+public class SeriesCatObservable: ObservableObject {
+    static public var shared = SeriesCatObservable()
+    @Published public var seriesCat: [SeriesCategory] = [SeriesCategory]()
+}
+//MARK: - 9
+public class SeriesTVObservable: ObservableObject {
+    static public var shared = SeriesTVObservable()
+    @Published public var seriesTVShows: [SeriesTVShow] = [SeriesTVShow]()
+    @Published public var episodes: [String : [TVSeriesInfo.Episode]] = [String : [TVSeriesInfo.Episode]]()
+}
+
+//MARK: - 10
+public class MoviesCatObservable: ObservableObject {
+    static public var shared = MoviesCatObservable()
+    @Published public var movieCat: [MovieCategory] = [MovieCategory]()
+}
+
+//MARK: - 11
+public class MoviesObservable: ObservableObject {
+    static public var shared = MoviesObservable()
+    @Published public var movieCatInfo: [MovieCategoryInfo] = [MovieCategoryInfo]()
+    @Published public var movieInfo: MovieInfo?
+}
+
+
 

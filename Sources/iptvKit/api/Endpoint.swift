@@ -42,6 +42,63 @@ func epgEndpoint(_ creds: Credentials, iptv: IPTV, actn: String, streamId: Int) 
     return epgEndpoint
 }
 
+func tvSeriesEndpoint(_ creds: Credentials, iptv: IPTV, actn: String, categoryID: String) -> URLComponents {
+    var epgEndpoint = URLComponents()
+    
+    epgEndpoint.scheme = iptv.scheme
+    epgEndpoint.host = iptv.host
+    epgEndpoint.port = iptv.port
+    epgEndpoint.path = iptv.path
+
+    epgEndpoint.queryItems = [
+        URLQueryItem(name: "username", value: creds.username),
+        URLQueryItem(name: "password", value: creds.password),
+        URLQueryItem(name: "action", value: actn),
+        URLQueryItem(name: "category_id", value: "\(categoryID)")
+    ]
+    
+    return epgEndpoint
+}
+
+
+func tvSeriesInfoEndpoint(_ creds: Credentials, iptv: IPTV, actn: String, seriesID: String) -> URLComponents {
+    var epgEndpoint = URLComponents()
+    
+    epgEndpoint.scheme = iptv.scheme
+    epgEndpoint.host = iptv.host
+    epgEndpoint.port = iptv.port
+    epgEndpoint.path = iptv.path
+
+    epgEndpoint.queryItems = [
+        URLQueryItem(name: "username", value: creds.username),
+        URLQueryItem(name: "password", value: creds.password),
+        URLQueryItem(name: "action", value: actn),
+        URLQueryItem(name: "series_id", value: "\(seriesID)")
+    ]
+    
+    return epgEndpoint
+}
+
+func movieInfoEndpoint(_ creds: Credentials, iptv: IPTV, actn: String, vodID: String) -> URLComponents {
+    var epgEndpoint = URLComponents()
+    
+    epgEndpoint.scheme = iptv.scheme
+    epgEndpoint.host = iptv.host
+    epgEndpoint.port = iptv.port
+    epgEndpoint.path = iptv.path
+
+    epgEndpoint.queryItems = [
+        URLQueryItem(name: "username", value: creds.username),
+        URLQueryItem(name: "password", value: creds.password),
+        URLQueryItem(name: "action", value: actn),
+        URLQueryItem(name: "vod_id", value: "\(vodID)")
+    ]
+    
+    return epgEndpoint
+}
+
+
+
 func nowPlayingEndpoint() -> URLComponents {
     var epgEndpoint = URLComponents()
     

@@ -14,6 +14,17 @@ public enum Actions: String {
     case getLiveStreams = "get_live_streams"
     case getshortEpg = "get_short_epg"
     case configAction = ""
+    case getSeriesCategories = "get_series_categories"
+    case getSeries = "get_series"
+    case getSeriesInfo = "get_series_info"
+    case getVodCategories = "get_vod_categories"
+    case getVodStreams = "get_vod_streams"
+    case getVodInfo = "get_vod_info"
+        //http://etv.wstreamzone.com/player_api.php?username=U0YSV8YOCT&password=FU56KJYJJV&action=get_vod_categories
+
+        //http://etv.wstreamzone.com/player_api.php?username=U0YSV8YOCT&password=FU56KJYJJV&action=get_vod_streams&category_id=1777
+
+        //http://etv.wstreamzone.com/player_api.php?username=U0YSV8YOCT&password=FU56KJYJJV&action=get_vod_info&vod_id=444939
 }
 
 func getCategories() {
@@ -48,7 +59,17 @@ func getCategories() {
             }
         }
         
-        if cats.count > 3 { cats.removeLast() }
+        //Adult channels are not allowed
+        var newCats = [Category]()
+        for cat in cats {
+            if !cat.categoryName.lowercased().contains("adult") {
+                newCats.append(cat)
+            }
+        }
+      
+        cats = newCats.sorted(by: { $0.categoryName > $1.categoryName })
+        
+        //if cats.count > 3 { cats.removeLast() }
         awaitDone = true
     }
 }
@@ -171,3 +192,106 @@ public func getNowPlayingEpg() {
         }
     }
 }
+
+public func getVideoOnDemandSeries() {
+    let action = Actions.getSeriesCategories.rawValue
+    let endpoint = api.getEndpoint(creds, iptv, action)
+    rest.getRequest(endpoint: endpoint) { (data) in
+        
+        guard let data = data else {
+            print("\(action) error")
+            return
+        }
+        
+        if let seriesCategories = try? decoder.decode([SeriesCategory].self, from: data) {
+            SeriesCatObservable.shared.seriesCat = seriesCategories
+        }
+    }
+}
+
+public func getVideoOnDemandSeriesItems(categoryID: String) {
+    let action = Actions.getSeries.rawValue
+    let endpoint = api.getTVSeriesEndpoint(creds, iptv, action, categoryID)
+    rest.getRequest(endpoint: endpoint) { (data) in
+        
+        guard let data = data else {
+            print("\(action) error")
+            return
+        }
+        
+        if let seriesTVShows = try? decoder.decode([SeriesTVShow].self, from: data) {
+            SeriesTVObservable.shared.seriesTVShows = seriesTVShows
+        }
+    }
+}
+
+public func getVideoOnDemandSeriesInfo(seriesID: String) {
+    let action = Actions.getSeriesInfo.rawValue
+    let endpoint = api.getTVSeriesInfoEndpoint(creds, iptv, action, seriesID)
+    rest.getRequest(endpoint: endpoint) { (data) in
+        
+        guard let data = data else {
+            print("\(action) error")
+            return
+        }
+        
+        if let seriesTVShows = try? decoder.decode(TVSeriesInfo.self, from: data), let episodes = seriesTVShows.episodes  {
+            SeriesTVObservable.shared.episodes = episodes
+        }
+    }
+}
+
+public func getVideoOnDemandMovies() {
+    let action = Actions.getVodCategories.rawValue
+    let endpoint = api.getEndpoint(creds, iptv, action)
+    rest.getRequest(endpoint: endpoint) { (data) in
+        
+        guard let data = data else {
+            print("\(action) error")
+            return
+        }
+        
+        if let movieCategories = try? decoder.decode([MovieCategory].self, from: data) {
+            MoviesCatObservable.shared.movieCat = movieCategories
+        }
+    }
+}
+
+public func getVideoOnDemandMoviesItems(categoryID: String) {
+    let action = Actions.getVodStreams.rawValue
+    let endpoint = api.getTVSeriesEndpoint(creds, iptv, action, categoryID)
+    rest.getRequest(endpoint: endpoint) { (data) in
+        
+        guard let data = data else {
+            print("\(action) error")
+            return
+        }
+        
+        if let movieCategoryInfo = try? decoder.decode([MovieCategoryInfo].self, from: data) {
+            MoviesObservable.shared.movieCatInfo = movieCategoryInfo
+        }
+    }
+}
+
+public func getVideoOnDemandMoviesInfo(vodID: String) {
+    let action = Actions.getVodInfo.rawValue
+    let endpoint = api.getMovieInfoEndpoint(creds, iptv, action, vodID)
+    
+    print(endpoint)
+    
+    
+    rest.getRequest(endpoint: endpoint) { (data) in
+        
+        guard let data = data else {
+            print("\(action) error")
+            return
+        }
+        
+        if let movieInfo = try? decoder.decode(MovieInfo.self, from: data) {
+            print(movieInfo)
+            MoviesObservable.shared.movieInfo = movieInfo
+        }
+    }
+}
+
+
