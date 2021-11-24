@@ -261,13 +261,14 @@ public func getVideoOnDemandMoviesItems(categoryID: String) {
     let action = Actions.getVodStreams.rawValue
     let endpoint = api.getTVSeriesEndpoint(creds, iptv, action, categoryID)
     rest.getRequest(endpoint: endpoint) { (data) in
-        
+        print(endpoint)
         guard let data = data else {
             print("\(action) error")
             return
         }
         
         if let movieCategoryInfo = try? decoder.decode([MovieInfoElement].self, from: data) {
+            print(movieCategoryInfo.first)
             MoviesObservable.shared.movieCatInfo = movieCategoryInfo
         }
     }

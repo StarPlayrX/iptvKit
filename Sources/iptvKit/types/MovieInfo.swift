@@ -64,6 +64,7 @@ public struct MovieInfoElement: Codable {
 }
 
 public enum ContainerExtension: String, Codable {
+    case ts = "ts"
     case wmp = "wmp"
     case m4v = "m4v"
     case hls = "hls"

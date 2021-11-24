@@ -29,7 +29,7 @@ public var chan: Channels = Channels()
 public var shortEpg: iptvShortEpg? = nil
 
 
-public let userSettings = "userSettings"
+public let userSettings = "userSettings90"
 public let userSwitches = "userSwitches"
 
 public func saveUserDefaults() {
