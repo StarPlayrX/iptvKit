@@ -22,14 +22,11 @@ public var iptv = IPTV (
 
 public let rest = Rest()
 public let decoder = JSONDecoder()
-
 public var cats: Categories = Categories()
 public var conf: Configuration? = nil
 public var chan: Channels = Channels()
 public var shortEpg: iptvShortEpg? = nil
-
-
-public let userSettings = "userSettings90"
+public let userSettings = "userSettings22"
 public let userSwitches = "userSwitches"
 
 public func saveUserDefaults() {

@@ -268,9 +268,39 @@ public func getVideoOnDemandMoviesItems(categoryID: String) {
         }
         
         if let movieCategoryInfo = try? decoder.decode([MovieInfoElement].self, from: data) {
-            print(movieCategoryInfo.first)
             MoviesObservable.shared.movieCatInfo = movieCategoryInfo
         }
     }
 }
 
+public func mvp(search: String) -> String  {
+    var str = "http://image.tmdb.org/t/p/w500/mqFCmfmJmUcdfDelnjm6qWr3OCA.jpg" // Defaults to the TV Set
+    do {
+        let scheme = "http"
+        let host = "api.themoviedb.org"
+        let path = "/3/search/movie"
+        let queryItemA = URLQueryItem(name: "api_key", value: "fcaa164488c826d694895a6a0d27f726")
+        let queryItemB = URLQueryItem(name: "query", value: search)
+        
+        var urlComponents = URLComponents()
+        urlComponents.scheme = scheme
+        urlComponents.host = host
+        urlComponents.path = path
+        urlComponents.queryItems = [queryItemA,queryItemB]
+        
+        if let url = urlComponents.url {
+            let data = try Data(contentsOf: url)
+            if let moviePoster = try? decoder.decode(MoviePoster.self, from: data) {
+                if let movp = moviePoster.results.first?.posterPath {
+                    str = "http://image.tmdb.org/t/p/w500" + movp
+                    return str
+                }
+            }
+        }
+    }
+    catch {
+        print(error)
+    }
+    
+    return str
+}
