@@ -274,7 +274,7 @@ public func getVideoOnDemandMoviesItems(categoryID: String) {
 }
 
 public func mvp(search: String) -> String  {
-    var str = "http://image.tmdb.org/t/p/w500/mqFCmfmJmUcdfDelnjm6qWr3OCA.jpg" // Defaults to the TV Set
+    var str = "http://starplayrx.com/images/pleasestandby.png" //Please stand by
     do {
         let scheme = "http"
         let host = "api.themoviedb.org"
@@ -292,7 +292,7 @@ public func mvp(search: String) -> String  {
             let data = try Data(contentsOf: url)
             if let moviePoster = try? decoder.decode(MoviePoster.self, from: data) {
                 if let movp = moviePoster.results.first?.posterPath {
-                    str = "http://image.tmdb.org/t/p/w500" + movp
+                    str = "http://image.tmdb.org/t/p/w400" + movp
                     return str
                 }
             }
