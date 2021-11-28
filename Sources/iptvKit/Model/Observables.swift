@@ -100,6 +100,7 @@ public class SeriesCatObservable: ObservableObject {
 //MARK: - 9
 public class SeriesTVObservable: ObservableObject {
     static public var shared = SeriesTVObservable()
+    @Published public var selectedTVShow: Int?
     @Published public var seriesTVShows: [SeriesTVShow] = [SeriesTVShow]()
     @Published public var episodes: [String : [TVSeriesInfo.Episode]] = [String : [TVSeriesInfo.Episode]]()
 }

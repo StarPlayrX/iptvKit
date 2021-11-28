@@ -304,3 +304,37 @@ public func mvp(search: String) -> String  {
     
     return str
 }
+
+public func tvc(search: String) -> String  {
+    var str = "http://starplayrx.com/images/pleasestandby.png" //Please stand by
+    do {
+        let scheme = "http"
+        let host = "api.themoviedb.org"
+        let path = "/3/search/tv"
+        let queryItemA = URLQueryItem(name: "api_key", value: "fcaa164488c826d694895a6a0d27f726")
+        let queryItemB = URLQueryItem(name: "query", value: search)
+        
+        var urlComponents = URLComponents()
+        urlComponents.scheme = scheme
+        urlComponents.host = host
+        urlComponents.path = path
+        urlComponents.queryItems = [queryItemA,queryItemB]
+        
+        if let url = urlComponents.url {
+            print(url.absoluteString)
+            let data = try Data(contentsOf: url)
+            if let tvPoster = try? decoder.decode(TVPoster.self, from: data) {
+                if let tvp = tvPoster.results.first?.posterPath {
+                    str = "http://image.tmdb.org/t/p/w400" + tvp
+                    print(str)
+                    return str
+                }
+            }
+        }
+    }
+    catch {
+        print(error)
+    }
+    
+    return str
+}
