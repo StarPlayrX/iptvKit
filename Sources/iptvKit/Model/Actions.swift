@@ -321,12 +321,10 @@ public func tvc(search: String) -> String  {
         urlComponents.queryItems = [queryItemA,queryItemB]
         
         if let url = urlComponents.url {
-            print(url.absoluteString)
             let data = try Data(contentsOf: url)
             if let tvPoster = try? decoder.decode(TVPoster.self, from: data) {
                 if let tvp = tvPoster.results.first?.posterPath {
                     str = "http://image.tmdb.org/t/p/w400" + tvp
-                    print(str)
                     return str
                 }
             }
