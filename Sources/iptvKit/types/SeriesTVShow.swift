@@ -25,7 +25,8 @@ public struct SeriesTVShow: Codable {
     public let youtubeTrailer: String
     public let episodeRunTime: String
     public let categoryID: String
-
+    public var uuid: UUID = UUID()
+    
     enum CodingKeys: String, CodingKey {
         case num = "num"
         case name = "name"

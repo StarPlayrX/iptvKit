@@ -49,7 +49,7 @@ public class PlayerObservable: ObservableObject {
     @Published public var fullscreen: Bool = false
     @Published public var previousStreamID: Int = -2
     @Published public var previousCategoryID: String = ""
-    @Published public var previousSelection: String = ""
+    @Published public var categoryName: String = ""
     @Published public var channelName: String = ""
     @Published public var imageURL: String = ""
     @Published public var streamID: Int = -1
@@ -100,6 +100,7 @@ public class SeriesCatObservable: ObservableObject {
 //MARK: - 9
 public class SeriesTVObservable: ObservableObject {
     static public var shared = SeriesTVObservable()
+    @Published public var bool: Int?
     @Published public var selectedTVShow: Int?
     @Published public var seriesTVShows: [SeriesTVShow] = [SeriesTVShow]()
     @Published public var episodes: [String : [TVSeriesInfo.Episode]] = [String : [TVSeriesInfo.Episode]]()

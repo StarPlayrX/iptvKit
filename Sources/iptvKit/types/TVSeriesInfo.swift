@@ -21,7 +21,7 @@ public struct TVSeriesInfo: Codable {
         public let info: EpisodeInfo
         public let added: String
         public let season: Int
-
+        public let uuid: UUID = UUID()
         enum CodingKeys: String, CodingKey {
             case id = "id"
             case episodeNum = "episode_num"

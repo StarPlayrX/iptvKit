@@ -12,7 +12,7 @@ public struct Category: Codable {
     public let categoryID: String
     public var categoryName: String
     public let parentID: Int
-    
+    public var uuid: UUID = UUID()
     enum CodingKeys: String, CodingKey {
         case categoryID = "category_id"
         case categoryName = "category_name"
