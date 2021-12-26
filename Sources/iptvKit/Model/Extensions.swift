@@ -62,9 +62,7 @@ public extension Array where Element == UInt8 {
 }
 
 public extension String {
-
-    func toDate(withFormat format: String = "yyyy-MM-dd HH:mm:ss") -> Date? {
-
+    func toDate(withFormat format: String = "yyyyMMddHHmmssZ") -> Date? {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = .autoupdatingCurrent
         dateFormatter.locale = .autoupdatingCurrent
@@ -77,6 +75,16 @@ public extension String {
 
 public extension Date {
     func toString(withFormat format: String = "h:mm a") -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = .autoupdatingCurrent
+        dateFormatter.timeZone = .autoupdatingCurrent
+        dateFormatter.calendar = Calendar(identifier: .gregorian)
+        dateFormatter.dateFormat = format
+        let str = dateFormatter.string(from: self)
+        return str
+    }
+    
+    func toFullString(withFormat format: String = "yyyy-MM-dd h:mm a") -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = .autoupdatingCurrent
         dateFormatter.timeZone = .autoupdatingCurrent

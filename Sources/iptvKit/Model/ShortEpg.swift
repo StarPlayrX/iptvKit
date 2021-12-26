@@ -14,7 +14,7 @@ public struct iptvShortEpg: Codable {
     }
     
     public let epgListings: [EpgListing]
-
+    
     enum CodingKeys: String, CodingKey {
         case epgListings = "epg_listings"
     }
@@ -22,7 +22,7 @@ public struct iptvShortEpg: Codable {
 
 // MARK: - EpgListing
 public struct EpgListing: Codable {
-    public init(id: String, epgID: String, title: String, lang: String, start: String, end: String, epgListingDescription: String, channelID: String, startTimestamp: String, stopTimestamp: String) {
+    public init(id: SuperString, epgID: String, title: String, lang: String, start: SuperString, end: SuperString, epgListingDescription: String, channelID: String, startTimestamp: SuperString, stopTimestamp: SuperString) {
         self.id = id
         self.epgID = epgID
         self.title = title
@@ -34,11 +34,12 @@ public struct EpgListing: Codable {
         self.startTimestamp = startTimestamp
         self.stopTimestamp = stopTimestamp
     }
+    public let id: SuperString
+    public let epgID, title, lang: String
+    public let start, end: SuperString
+    public let epgListingDescription, channelID: String
+    public let startTimestamp, stopTimestamp: SuperString
     
-    public let id, epgID, title, lang: String
-    public let start, end, epgListingDescription, channelID: String
-    public let startTimestamp, stopTimestamp: String
-
     enum CodingKeys: String, CodingKey {
         case id
         case epgID = "epg_id"
@@ -48,4 +49,70 @@ public struct EpgListing: Codable {
         case startTimestamp = "start_timestamp"
         case stopTimestamp = "stop_timestamp"
     }
+}
+
+public struct SuperString: Codable {
+    public var value: String
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        if let str1 = try? container.decode(String.self) {
+            value = String(str1)
+            return
+        } else if let int1 = try? container.decode(Int.self) {
+            value = String(int1)
+            return
+        }
+        
+        throw DecodingError.typeMismatch(SuperString.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for SuperString"))
+    }
+    
+  
+}
+
+public struct SuperInt: Codable {
+    public var value: Int
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        if let int1 = try? container.decode(Int.self) {
+            value = Int(int1)
+            return
+        } else if let str1 = try? container.decode(String.self), let str2 = Int(str1) {
+            value = str2
+            return
+        }
+        
+        throw DecodingError.typeMismatch(SuperInt.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for SuperInt"))
+    }
+    
+    
+   
+}
+
+public struct SuperStringBean: Codable {
+    internal init(value: String) {
+        self.value = String(value)
+    }
+    
+    public var value: String
+    
+   /* public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        if let int1 = try? container.decode(Int.self) {
+            value = Int(int1)
+            return
+        } else if let str1 = try? container.decode(String.self), let str2 = Int(str1) {
+            value = str2
+            return
+        }
+        
+        throw DecodingError.typeMismatch(SuperInt.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for SuperInt"))
+    } */
+    
+    
+   
 }

@@ -77,6 +77,7 @@ func getCategories() {
 func getConfig() {
     let action = Actions.configAction.rawValue
     let endpoint = api.getEndpoint(creds, iptv, action)
+    
     func loginError() {
         LoginObservable.shared.status = "Login Error"
         setCurrentStep = .ConfigurationError
@@ -89,7 +90,9 @@ func getConfig() {
             return
         }
         
-        if let config = try? decoder.decode(Configuration.self, from: login) {
+        
+        do {
+            let config = try decoder.decode(Configuration.self, from: login)
             LoginObservable.shared.config = config
             LoginObservable.shared.password = config.userInfo.password
             LoginObservable.shared.username = config.userInfo.username
@@ -97,9 +100,11 @@ func getConfig() {
             LoginObservable.shared.url = config.serverInfo.url
             saveUserDefaults()
             awaitDone = true
-        } else {
+        } catch {
+            print(error)
             loginError()
         }
+        
     }
 }
 
@@ -113,24 +118,32 @@ public func getShortEpg(streamId: Int, channelName: String, imageURL: String) {
             return
         }
         
-        if let epg = try? decoder.decode(ShortIPTVEpg.self, from: programguide) {
+        let str = String(decoding: programguide, as: UTF8.self)
+        
+        do {
+            let epg = try decoder.decode(ShortIPTVEpg.self, from: programguide)
             shortEpg = epg
             PlayerObservable.plo.miniEpg = shortEpg?.epgListings ?? []
-            
-           /*  DispatchQueue.global().async {
-                if let url = URL(string: imageURL) {
-                    let data = try? Data(contentsOf: url)
-                    DispatchQueue.main.async {
-                        
-                   if let data = data, let image = UIImage(data: data), !channelName.isEmpty {
-                            setnowPlayingInfo(channelName: channelName, image: image)
-                        } else if !channelName.isEmpty {
-                            setnowPlayingInfo(channelName: channelName, image: nil)
+                
+               /*  DispatchQueue.global().async {
+                    if let url = URL(string: imageURL) {
+                        let data = try? Data(contentsOf: url)
+                        DispatchQueue.main.async {
+                            
+                       if let data = data, let image = UIImage(data: data), !channelName.isEmpty {
+                                setnowPlayingInfo(channelName: channelName, image: image)
+                            } else if !channelName.isEmpty {
+                                setnowPlayingInfo(channelName: channelName, image: nil)
+                            }
                         }
                     }
-                }
-            } */
+                } */
+           
+            
+        } catch {
+            print(error)
         }
+     
     }
 }
 
@@ -174,21 +187,24 @@ public func getNowPlayingEpg() {
             print("getNowPlayingEpg Error")
             return
         }
-        
-        if let nowplaying = try? decoder.decode(NowPlaying.self, from: programguide) {
-            
-            if !chnlz.isEmpty {
-                for (index, ch) in chnlz.enumerated() {
-                    if let nowplaying = Optional(nowplaying), let chid = ch.epgChannelID {
-                        chnlz[index].nowPlaying = nowplaying[chid]?.title.base64Decoded ?? ""
-                    } else {
-                        chnlz[index].nowPlaying = ""
-                    }
-                }
                 
-                ChannelsObservable.shared.chan = chnlz
+        do {
+            NowPlayingLive = try decoder.decode(NowPlaying.self, from: programguide)
 
-            }
+                if !chnlz.isEmpty {
+                    for (index, ch) in chnlz.enumerated() {
+                        if let nowplaying = Optional(NowPlayingLive), let chid = ch.epgChannelID, let npl = nowplaying[chid]?.first, let str = npl.start.toDate()?.toString() {
+                            chnlz[index].nowPlaying = str + "\n" + npl.title
+                        } else {
+                            chnlz[index].nowPlaying = ""
+                        }
+                    }
+                    
+                    ChannelsObservable.shared.chan = chnlz
+
+                }
+        } catch {
+            print(error)
         }
     }
 }
@@ -203,6 +219,8 @@ public func getVideoOnDemandSeries() {
             return
         }
         
+        print(data)
+        
         if let seriesCategories = try? decoder.decode([SeriesCategory].self, from: data) {
             SeriesCatObservable.shared.seriesCat = seriesCategories
         }
@@ -212,12 +230,15 @@ public func getVideoOnDemandSeries() {
 public func getVideoOnDemandSeriesItems(categoryID: String) {
     let action = Actions.getSeries.rawValue
     let endpoint = api.getTVSeriesEndpoint(creds, iptv, action, categoryID)
+    
     rest.getRequest(endpoint: endpoint) { (data) in
         
         guard let data = data else {
             print("\(action) error")
             return
         }
+        
+        
         
         if let seriesTVShows = try? decoder.decode([SeriesTVShow].self, from: data) {
             SeriesTVObservable.shared.seriesTVShows = seriesTVShows
@@ -228,6 +249,7 @@ public func getVideoOnDemandSeriesItems(categoryID: String) {
 public func getVideoOnDemandSeriesInfo(seriesID: String) {
     let action = Actions.getSeriesInfo.rawValue
     let endpoint = api.getTVSeriesInfoEndpoint(creds, iptv, action, seriesID)
+    
     rest.getRequest(endpoint: endpoint) { (data) in
         
         guard let data = data else {
@@ -235,9 +257,19 @@ public func getVideoOnDemandSeriesInfo(seriesID: String) {
             return
         }
         
-        if let seriesTVShows = try? decoder.decode(TVSeriesInfo.self, from: data), let episodes = seriesTVShows.episodes  {
-            SeriesTVObservable.shared.episodes = episodes
+        do {
+            let seriesTVShows = try decoder.decode(TVSeriesInfo.self, from: data)
+            let episodes = seriesTVShows.episodes
+            SeriesTVObservable.shared.episodes = episodes!
+        
         }
+        catch {
+            print(error)
+            
+            
+        }
+        
+        
     }
 }
 
@@ -261,7 +293,6 @@ public func getVideoOnDemandMoviesItems(categoryID: String) {
     let action = Actions.getVodStreams.rawValue
     let endpoint = api.getTVSeriesEndpoint(creds, iptv, action, categoryID)
     rest.getRequest(endpoint: endpoint) { (data) in
-        print(endpoint)
         guard let data = data else {
             print("\(action) error")
             return

@@ -91,11 +91,8 @@ var setCurrentStep: Stepper = .start {
             LoginObservable.shared.isAutoSwitchCat = true
             LoginObservable.shared.isLoggedIn = true
             LoginObservable.shared.showingLogin = false
-
             LoginObservable.shared.isLoginButtonDisabled = false
-
-
-
+            
         default:
             awaitDone = false
 

@@ -15,7 +15,8 @@ public struct TVSeriesInfo: Codable {
     // MARK: - Episode
     public struct Episode: Codable {
         public let id: String
-        public let episodeNum: Int
+        public let episodeNum: SuperInt
+        
         public let title: String
         public let containerExtension: String
         public let info: EpisodeInfo
@@ -32,17 +33,19 @@ public struct TVSeriesInfo: Codable {
             case season = "season"
         }
     }
-
+    
+    
+    
     enum ContainerExtension: String, Codable {
         case mkv = "mkv"
     }
-
+    
     // MARK: - EpisodeInfo
     public struct EpisodeInfo: Codable {
         public let durationSecs: Int
         public let duration: String
         public let bitrate: Int
-
+        
         enum CodingKeys: String, CodingKey {
             case durationSecs = "duration_secs"
             case duration = "duration"
@@ -54,18 +57,17 @@ public struct TVSeriesInfo: Codable {
     public struct SeriesTVShowInfo: Codable {
         public let name: String
         public let cover: String
-        public let plot: String
-        public let cast: String
-        public let director: String
-        public let genre: String
-        public let releaseDate: String
-        public let lastModified: String
-        public let rating: String
-        public let rating5Based: Double
-        public let youtubeTrailer: String
-        public let episodeRunTime: String
+        public let plot: String?
+        public let cast: String?
+        public let director: String?
+        public let genre: String?
+        public let releaseDate: String?
+        public let lastModified: String?
+        public let rating: String?
+        public let rating5Based: Double?
+        public let episodeRunTime: String?
         public let categoryID: String
-
+        
         enum CodingKeys: String, CodingKey {
             case name = "name"
             case cover = "cover"
@@ -77,12 +79,37 @@ public struct TVSeriesInfo: Codable {
             case lastModified = "last_modified"
             case rating = "rating"
             case rating5Based = "rating_5based"
-            case youtubeTrailer = "youtube_trailer"
             case episodeRunTime = "episode_run_time"
             case categoryID = "category_id"
         }
     }
 }
 
+public enum StringInt: Codable {
+    case integer(Int)
+    case string(String)
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        if let int1 = try? container.decode(Int.self) {
+            self = .integer(int1)
+            return
+        } else if let str1 = try? container.decode(String.self) {
+            self = .string(str1)
+            return
+        }
+        
+        throw DecodingError.typeMismatch(StringInt.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for StringInt"))
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .integer(let x):
+            try container.encode(x)
+        case .string(let x):
+            try container.encode(x)
+        }
 
-
+    }
+}

@@ -35,6 +35,8 @@ public struct ServerInfo: Codable {
         self.httpsPort = httpsPort
         self.serverProtocol = serverProtocol
     }
+    
+    
 
     public let rtmpPort: String
     public let timezone: String
@@ -55,27 +57,65 @@ public struct ServerInfo: Codable {
 
 // MARK: - UserInfo
 public struct UserInfo: Codable {
-    public init(username: String, password: String, message: String, auth: Int, status: String, expDate: String, isTrial: String, activeCons: String, createdAt: String, maxConnections: String, allowedOutputFormats: [String]) {
-        self.username = username
-        self.password = password
-        self.message = message
-        self.auth = auth
-        self.status = status
-        self.expDate = expDate
-        self.isTrial = isTrial
-        self.activeCons = activeCons
-        self.createdAt = createdAt
-        self.maxConnections = maxConnections
-        self.allowedOutputFormats = allowedOutputFormats
-    }
-    
+   
     public let username, password, message: String
-    public let auth: Int
-    public let status, expDate, isTrial, activeCons: String
-    public let createdAt, maxConnections: String
+    public let status, expDate: String
     public let allowedOutputFormats: [String]
 
     enum CodingKeys: String, CodingKey {
+         case username, password, message, status
+         case expDate = "exp_date"
+         case allowedOutputFormats = "allowed_output_formats"
+    }
+}
+
+
+/*
+ 
+ import Foundation
+
+ // MARK: - LoginInfo
+ struct LoginInfo: Codable {
+     let userInfo: UserInfo
+     let serverInfo: ServerInfo
+
+     enum CodingKeys: String, CodingKey {
+         case userInfo = "user_info"
+         case serverInfo = "server_info"
+     }
+ }
+
+ // MARK: - ServerInfo
+ struct ServerInfo: Codable {
+     let xui: Bool
+     let version: String
+     let revision: Int
+     let url, port, httpsPort, serverProtocol: String
+     let rtmpPort: String
+     let timestampNow: Int
+     let timeNow, timezone: String
+
+     enum CodingKeys: String, CodingKey {
+         case xui, version, revision, url, port
+         case httpsPort = "https_port"
+         case serverProtocol = "server_protocol"
+         case rtmpPort = "rtmp_port"
+         case timestampNow = "timestamp_now"
+         case timeNow = "time_now"
+         case timezone
+     }
+ }
+
+ // MARK: - UserInfo
+ struct UserInfo: Codable {
+     let username, password, message: String
+     let auth: Int
+     let status, expDate, isTrial: String
+     let activeCons: Int
+     let createdAt, maxConnections: String
+     let allowedOutputFormats: [String]
+
+     enum CodingKeys: String, CodingKey {
          case username, password, message, auth, status
          case expDate = "exp_date"
          case isTrial = "is_trial"
@@ -83,5 +123,8 @@ public struct UserInfo: Codable {
          case createdAt = "created_at"
          case maxConnections = "max_connections"
          case allowedOutputFormats = "allowed_output_formats"
-    }
-}
+     }
+ }
+
+ 
+ */
