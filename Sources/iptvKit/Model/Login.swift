@@ -51,6 +51,9 @@ enum Status: String {
     case Configuration = "Configuration"
     case Categories = "Categories"
     case Channels = "Channels"
+    case Completed = "Completed"
+    case NowPlaying = "Now Playing"
+
 }
 
 var setCurrentStep: Stepper = .start {
@@ -78,16 +81,16 @@ var setCurrentStep: Stepper = .start {
             
         case .categories:
             getCategories()
-            LoginObservable.shared.status = Status.Configuration.rawValue
+            LoginObservable.shared.status = Status.Categories.rawValue
             
         case .channels:
             getChannels()
-            LoginObservable.shared.status = Status.Categories.rawValue
+            LoginObservable.shared.status = Status.Channels.rawValue
             
         case .finish:
             //done
             awaitDone = true
-            LoginObservable.shared.status = Status.Channels.rawValue
+            LoginObservable.shared.status = Status.Completed.rawValue
             LoginObservable.shared.isAutoSwitchCat = true
             LoginObservable.shared.isLoggedIn = true
             LoginObservable.shared.showingLogin = false

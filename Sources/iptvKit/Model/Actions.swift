@@ -20,11 +20,11 @@ public enum Actions: String {
     case getVodCategories = "get_vod_categories"
     case getVodStreams = "get_vod_streams"
     case getVodInfo = "get_vod_info"
-        //http://etv.wstreamzone.com/player_api.php?username=U0YSV8YOCT&password=FU56KJYJJV&action=get_vod_categories
-
-        //http://etv.wstreamzone.com/player_api.php?username=U0YSV8YOCT&password=FU56KJYJJV&action=get_vod_streams&category_id=1777
-
-        //http://etv.wstreamzone.com/player_api.php?username=U0YSV8YOCT&password=FU56KJYJJV&action=get_vod_info&vod_id=444939
+    //http://etv.wstreamzone.com/player_api.php?username=U0YSV8YOCT&password=FU56KJYJJV&action=get_vod_categories
+    
+    //http://etv.wstreamzone.com/player_api.php?username=U0YSV8YOCT&password=FU56KJYJJV&action=get_vod_streams&category_id=1777
+    
+    //http://etv.wstreamzone.com/player_api.php?username=U0YSV8YOCT&password=FU56KJYJJV&action=get_vod_info&vod_id=444939
 }
 
 func getCategories() {
@@ -66,7 +66,7 @@ func getCategories() {
                 newCats.append(cat)
             }
         }
-      
+        
         cats = newCats.sorted(by: { $0.categoryName > $1.categoryName })
         
         //if cats.count > 3 { cats.removeLast() }
@@ -124,26 +124,26 @@ public func getShortEpg(streamId: Int, channelName: String, imageURL: String) {
             let epg = try decoder.decode(ShortIPTVEpg.self, from: programguide)
             shortEpg = epg
             PlayerObservable.plo.miniEpg = shortEpg?.epgListings ?? []
-                
-               /*  DispatchQueue.global().async {
-                    if let url = URL(string: imageURL) {
-                        let data = try? Data(contentsOf: url)
-                        DispatchQueue.main.async {
-                            
-                       if let data = data, let image = UIImage(data: data), !channelName.isEmpty {
-                                setnowPlayingInfo(channelName: channelName, image: image)
-                            } else if !channelName.isEmpty {
-                                setnowPlayingInfo(channelName: channelName, image: nil)
-                            }
-                        }
-                    }
-                } */
-           
+            
+            /*  DispatchQueue.global().async {
+             if let url = URL(string: imageURL) {
+             let data = try? Data(contentsOf: url)
+             DispatchQueue.main.async {
+             
+             if let data = data, let image = UIImage(data: data), !channelName.isEmpty {
+             setnowPlayingInfo(channelName: channelName, image: image)
+             } else if !channelName.isEmpty {
+             setnowPlayingInfo(channelName: channelName, image: nil)
+             }
+             }
+             }
+             } */
+            
             
         } catch {
             print(error)
         }
-     
+        
     }
 }
 
@@ -162,10 +162,9 @@ func getChannels() {
             return
         }
         
+
         channelData = data
         getNowPlayingHelper()
-        
-        awaitDone = true
     }
 }
 
@@ -177,9 +176,37 @@ public func getNowPlayingHelper() {
     }
 }
 
+public func loadTVGuideScreenX() {
+    DispatchQueue.global(qos: .background).async {
+        let catId = PlayerObservable.plo.previousCategoryID
+        var badCount = 0
+        var godCount = 0
+
+        if !ChannelsObservable.shared.chan.isEmpty {
+            for (index, ch) in ChannelsObservable.shared.chan.enumerated() where ch.categoryID == catId  {
+                
+               if
+                   let nowplaying = Optional(NowPlayingLive),
+                   let chid = ch.epgChannelID, let npl = nowplaying[chid]?.first,
+                   let start = npl.start.toDate()?.toString(),
+                   let stop = npl.stop.toDate()?.toString()
+               {
+                   ChannelsObservable.shared.chan[index].nowPlaying = start + " - " + stop + "\n" + npl.title
+                   godCount += 1
+               } else {
+                   ChannelsObservable.shared.chan[index].nowPlaying = ""
+                   badCount += 1
+                   if badCount > 20 && godCount < 10 { break }
+               }
+           }
+           
+      
+        }
+    }
+}
+
 public func getNowPlayingEpg() {
-    
-    var chnlz = ChannelsObservable.shared.chan
+    LoginObservable.shared.status = "Mini IPTVee Guide"
     
     let endpoint = api.getNowPlayingEndpoint()
     rest.getRequest(endpoint: endpoint) { (programguide) in
@@ -187,22 +214,11 @@ public func getNowPlayingEpg() {
             print("getNowPlayingEpg Error")
             return
         }
-                
+        
         do {
-            NowPlayingLive = try decoder.decode(NowPlaying.self, from: programguide)
-
-                if !chnlz.isEmpty {
-                    for (index, ch) in chnlz.enumerated() {
-                        if let nowplaying = Optional(NowPlayingLive), let chid = ch.epgChannelID, let npl = nowplaying[chid]?.first, let str = npl.start.toDate()?.toString() {
-                            chnlz[index].nowPlaying = str + "\n" + npl.title
-                        } else {
-                            chnlz[index].nowPlaying = ""
-                        }
-                    }
-                    
-                    ChannelsObservable.shared.chan = chnlz
-
-                }
+            let nowPlaying = try decoder.decode(NowPlaying.self, from: programguide)
+            NowPlayingLive = nowPlaying
+            awaitDone = true
         } catch {
             print(error)
         }
@@ -261,7 +277,7 @@ public func getVideoOnDemandSeriesInfo(seriesID: String) {
             let seriesTVShows = try decoder.decode(TVSeriesInfo.self, from: data)
             let episodes = seriesTVShows.episodes
             SeriesTVObservable.shared.episodes = episodes!
-        
+            
         }
         catch {
             print(error)
