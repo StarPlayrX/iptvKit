@@ -9,7 +9,7 @@ import Foundation
 
 public typealias NowPlaying = [String: [NowPlayingValue]]
 
-public var NowPlayingLive = NowPlaying()
+public var nowPlayingEpoch = Int(Date().timeIntervalSince1970)
 
 public struct NowPlayingValue: Codable {
     public let id: String

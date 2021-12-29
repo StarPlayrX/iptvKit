@@ -37,7 +37,7 @@ public class CategoriesObservable: ObservableObject {
 public class ChannelsObservable: ObservableObject {
     static public var shared = ChannelsObservable()
     @Published public var chan: [iptvChannel] = [iptvChannel]()
-    @Published public var nowPlayingLive: NowPlaying = NowPlaying()
+    @Published public var nowPlayingLive: [String: [NowPlayingValue]] = [String: [NowPlayingValue]]()
     
 }
 

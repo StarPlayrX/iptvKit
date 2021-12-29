@@ -90,7 +90,6 @@ func getConfig() {
             return
         }
         
-        
         do {
             let config = try decoder.decode(Configuration.self, from: login)
             LoginObservable.shared.config = config
@@ -104,7 +103,6 @@ func getConfig() {
             print(error)
             loginError()
         }
-        
     }
 }
 
@@ -117,9 +115,7 @@ public func getShortEpg(streamId: Int, channelName: String, imageURL: String) {
             LoginObservable.shared.status = "Get Short EPG Error"
             return
         }
-        
-        let str = String(decoding: programguide, as: UTF8.self)
-        
+                
         do {
             let epg = try decoder.decode(ShortIPTVEpg.self, from: programguide)
             shortEpg = epg
@@ -138,8 +134,6 @@ public func getShortEpg(streamId: Int, channelName: String, imageURL: String) {
              }
              }
              } */
-            
-            
         } catch {
             print(error)
         }
@@ -147,11 +141,16 @@ public func getShortEpg(streamId: Int, channelName: String, imageURL: String) {
     }
 }
 
-var channelData = Data()
-
 func getChannels() {
     let action = Actions.getLiveStreams.rawValue
     let endpoint = api.getEndpoint(creds, iptv, action)
+    
+    //MARK: search channels to patch
+    let actionMaxEast   = "USA Cinemax Action Max East"
+    let actionMax       = "USA Cinemax ActionMax"
+    let starzWest       = "USA Starz West"
+    
+    let filter = [actionMax.lowercased(), actionMaxEast.lowercased(), starzWest.lowercased()]
     
     rest.getRequest(endpoint: endpoint) { (data) in
         
@@ -162,45 +161,52 @@ func getChannels() {
             return
         }
         
-
-        channelData = data
-        getNowPlayingHelper()
-    }
-}
-
-
-public func getNowPlayingHelper() {
-    if let channels = try? decoder.decode(Channels.self, from: channelData) {
-        ChannelsObservable.shared.chan = channels
-        getNowPlayingEpg()
-    }
-}
-
-public func loadTVGuideScreenX() {
-    DispatchQueue.global(qos: .background).async {
-        let catId = PlayerObservable.plo.previousCategoryID
-        var badCount = 0
-        var godCount = 0
-
-        if !ChannelsObservable.shared.chan.isEmpty {
-            for (index, ch) in ChannelsObservable.shared.chan.enumerated() where ch.categoryID == catId  {
+        do {
+            ChannelsObservable.shared.chan = try decoder.decode(Channels.self, from: data)
+            
+            for (index, ch) in ChannelsObservable.shared.chan.enumerated() where filter.contains(ch.name.lowercased()) {
                 
-               if
-                   let nowplaying = Optional(NowPlayingLive),
-                   let chid = ch.epgChannelID, let npl = nowplaying[chid]?.first,
-                   let start = npl.start.toDate()?.toString(),
-                   let stop = npl.stop.toDate()?.toString()
-               {
-                   ChannelsObservable.shared.chan[index].nowPlaying = start + " - " + stop + "\n" + npl.title
-                   godCount += 1
-               } else {
-                   ChannelsObservable.shared.chan[index].nowPlaying = ""
-                   badCount += 1
-                   if badCount > 20 && godCount < 10 { break }
-               }
-           }
-           
-      
+                switch ch.name.lowercased() {
+                case actionMaxEast.lowercased():
+                    ChannelsObservable.shared.chan[index].epgChannelID = "actionmax.us"
+                    ChannelsObservable.shared.chan[index].name = actionMaxEast
+                case actionMax.lowercased():
+                    ChannelsObservable.shared.chan[index].epgChannelID = "actionmax.us"
+                    ChannelsObservable.shared.chan[index].name = actionMax
+                case starzWest.lowercased():
+                    ChannelsObservable.shared.chan[index].epgChannelID = "starzwest.us"
+                    ChannelsObservable.shared.chan[index].name = starzWest
+                default:
+                    ()
+                }
+            }
+            getNowPlayingEpg()
+        } catch {
+            print(error)
+        }
+    }
+}
+
+// MARK: Dealing with the illusion of Time
+public func antiTimeBubblePopper() {
+    nowPlayingEpoch = Int(Date().timeIntervalSince1970)
+    let pop = 0
+    
+    func refresh() {
+        DispatchQueue.global(qos: .background).async {
+            getNowPlayingEpg()
+        }
+    }
+    
+    for (key, bubble) in ChannelsObservable.shared.nowPlayingLive {
+        //MARK: Exterminate the expired program
+        if bubble.count > 2 {
+            let stopBubble = bubble[0].stopTimestamp
+            if nowPlayingEpoch > stopBubble  {
+                ChannelsObservable.shared.nowPlayingLive[key]?.remove(at: pop)
+                refresh()
+                break
+            }
         }
     }
 }
@@ -216,8 +222,8 @@ public func getNowPlayingEpg() {
         }
         
         do {
-            let nowPlaying = try decoder.decode(NowPlaying.self, from: programguide)
-            NowPlayingLive = nowPlaying
+            ChannelsObservable.shared.nowPlayingLive = try decoder.decode(NowPlaying.self, from: programguide)
+            antiTimeBubblePopper()
             awaitDone = true
         } catch {
             print(error)
@@ -234,9 +240,7 @@ public func getVideoOnDemandSeries() {
             print("\(action) error")
             return
         }
-        
-        print(data)
-        
+                
         if let seriesCategories = try? decoder.decode([SeriesCategory].self, from: data) {
             SeriesCatObservable.shared.seriesCat = seriesCategories
         }
@@ -253,8 +257,6 @@ public func getVideoOnDemandSeriesItems(categoryID: String) {
             print("\(action) error")
             return
         }
-        
-        
         
         if let seriesTVShows = try? decoder.decode([SeriesTVShow].self, from: data) {
             SeriesTVObservable.shared.seriesTVShows = seriesTVShows
@@ -281,11 +283,7 @@ public func getVideoOnDemandSeriesInfo(seriesID: String) {
         }
         catch {
             print(error)
-            
-            
         }
-        
-        
     }
 }
 
@@ -380,6 +378,5 @@ public func tvc(search: String) -> String  {
     catch {
         print(error)
     }
-    
     return str
 }

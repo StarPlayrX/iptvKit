@@ -9,24 +9,22 @@ import Foundation
 
 // MARK: - ConfigElement
 public struct iptvChannel: Codable, Identifiable {
-    public init(num: Int, name: String, streamID: Int, streamIcon: String, epgChannelID: String?, categoryID: String, nowPlaying: String = "", id: UUID = UUID()) {
+    public init(num: Int, name: String, streamID: Int, streamIcon: String, epgChannelID: String?, categoryID: String, id: UUID = UUID()) {
         self.num = num
         self.name = name
         self.streamID = streamID
         self.streamIcon = streamIcon
         self.epgChannelID = epgChannelID
         self.categoryID = categoryID
-        self.nowPlaying = nowPlaying
         self.id = id
     }
     
     public let num: Int
-    public let name: String
+    public var name: String
     public let streamID: Int
     public let streamIcon: String
-    public let epgChannelID: String?
+    public var epgChannelID: String?
     public let categoryID: String?
-    public var nowPlaying: String = ""
     public var id = UUID()
     
     enum CodingKeys: String, CodingKey {
