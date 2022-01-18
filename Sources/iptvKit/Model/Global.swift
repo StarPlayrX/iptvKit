@@ -9,6 +9,10 @@ import Foundation
 
 public let api = Api()
 
+public var lock = false
+public var lockCounter = 0
+public var nowPlayingBytes = -1
+
 public var creds = Creds (
     username: "",
     password: ""

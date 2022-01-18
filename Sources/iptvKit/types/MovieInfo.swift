@@ -29,7 +29,7 @@ public struct MovieCategoryInfo: Codable {
     public let rating5Based: Double?
     public let added: String?
     public let categoryID: String
-    public let containerExtension: ContainerExtension.RawValue
+    public var containerExtension: ContainerExtension.RawValue?
 
     enum CodingKeys: String, CodingKey {
         case num = "num"
@@ -51,7 +51,7 @@ public struct MovieInfoElement: Codable {
     public let streamIcon: String?
     public let rating5Based: Double?
     public let categoryID: String
-    public let containerExtension: ContainerExtension.RawValue
+    public var containerExtension: ContainerExtension.RawValue?
 
     enum CodingKeys: String, CodingKey {
         case name = "name"

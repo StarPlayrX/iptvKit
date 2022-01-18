@@ -146,12 +146,111 @@ func getChannels() {
     let endpoint = api.getEndpoint(creds, iptv, action)
     
     //MARK: search channels to patch
-    let actionMaxEast   = "USA Cinemax Action Max East"
-    let actionMax       = "USA Cinemax ActionMax"
-    let starzWest       = "USA Starz West"
+    enum search: String, CaseIterable {
+        case actionMaxEast       = "USA CINEMAX ACTION MAX EAST"
+        case actionMax           = "USA CINEMAX ACTIONMAX"
+        case starzWest           = "USA Starz West"
+        case animalPlanetWest    = "USA Animal Planet West"
+        case betWest             = "USA BET West"
+        case coziTV              = "USA Cozi TV"
+        case coziTVLHD           = "USA COZI TV LHD"
+        case motorTrend          = "USA Motor Trend"
+        case eWest               = "USA E! Entertainment West"
+        case freeformWest        = "USA Freeform West"
+        case fX                  = "USA FX"
+        case westFX              = "USA FX West"
+        case westFXX             = "USA FXX West"
+        case syfyWest            = "USA Syfy West"
+        case tlcWest             = "USA TLC West"
+        case retroPlexWest       = "USA RetroPlex West"
+        case foodNetworkWest     = "USA Food Network West"
+        case tvLand              = "USA TVLand UHD"
+        case hgtvWest            = "USA HGTV West"
+        case smile               = "USA Smile Child"
+        case foxSoul             = "USA FOX Soul"
+        case starzEncoreEast     = "USA Starz Encore East"
+        case showtimeEast        = "USA Showtime East"
+    }
     
-    let filter = [actionMax.lowercased(), actionMaxEast.lowercased(), starzWest.lowercased()]
+    enum display: String, CaseIterable {
+        case actionMaxEast       = "Cinemax ActionMax East"
+        case actionMax           = "Cinemax ActionMax"
+        case starzWest           = "Starz West"
+        case animalPlanetWest    = "Animal Planet West"
+        case betWest             = "BET West"
+        case coziTV              = "Cozi TV"
+        case coziTVLHD           = "Cozi TV LHD"
+        case motorTrend          = "Motor Trend"
+        case eWest               = "E! West"
+        case freeformWest        = "Freeform West"
+        case fX                  = "FX"
+        case westFX              = "FX West"
+        case westFXX             = "FXX West"
+        case syfyWest            = "Syfy West"
+        case tlcWest             = "TLC West"
+        case retroPlexWest       = "RetroPlex West"
+        case foodNetworkWest     = "Food Network West"
+        case tvLand              = "TVLand UHD"
+        case hgtvWest            = "HGTV West"
+        case smile               = "Smile"
+        case foxSoul             = "FOX Soul"
+        case starzEncoreEast     = "Starz Encore East"
+        case showtimeEast        = "Showtime East"
+    }
     
+    enum ids: String, CaseIterable {
+        case actionMaxEast       = "actionmaxwest.us"
+        case actionMax           = "Actionmaxwest.us"
+        case starzWest           = "starzwest.us"
+        case animalPlanetWest    = "animalplanetwest.us"
+        case betWest             = "betwest.us"
+        case coziTV              = "cozitv.us"
+        case coziTVLHD           = "Cozitv.us"
+        case motorTrend          = "motortrend.it"
+        case eWest               = "ewest.us"
+        case freeformWest        = "freeformwest.us"
+        case fX                  = "fx.us"
+        case westFX              = "fxwest.us"
+        case westFXX             = "fxxwest.us"
+        case syfyWest            = "syfywest.us"
+        case tlcWest             = "tlcwest.us"
+        case retroPlexWest       = "retroplexwest.us"
+        case foodNetworkWest     = "foodnetworkwest.us"
+        case tvLand              = "tvlandeast.us"
+        case hgtvWest            = "HGTVWest.us"
+        case smile               = "smiletv.us"
+        case foxSoul             = "foxsoul.us"
+        case starzEncoreEast     = "starzencoreeast.us"
+        case showtimeEast        = "showtimeeast.us"
+    }
+    
+    if ids.allCases.count != search.allCases.count && search.allCases.count != display.allCases.count {
+        print("Enumeration Error with allCases!")
+        return
+    }
+    
+    var filter = [String]()
+    var idz = [String]()
+    var disp = [String]()
+
+    for channel in search.allCases {
+        filter.append(channel.rawValue)
+    }
+    
+    for dis in display.allCases {
+        disp.append(dis.rawValue)
+    }
+    
+    for ident in ids.allCases {
+        idz.append(ident.rawValue.lowercased())
+    }
+
+    var epgChannelID = [String:[String]]()
+    
+    for (index,ident) in filter.enumerated() {
+        epgChannelID[ident] = [disp[index],idz[index]]
+    }
+
     rest.getRequest(endpoint: endpoint) { (data) in
         
         guard let data = data else {
@@ -162,72 +261,88 @@ func getChannels() {
         }
         
         do {
-            ChannelsObservable.shared.chan = try decoder.decode(Channels.self, from: data)
-            
-            for (index, ch) in ChannelsObservable.shared.chan.enumerated() where filter.contains(ch.name.lowercased()) {
-                
-                switch ch.name.lowercased() {
-                case actionMaxEast.lowercased():
-                    ChannelsObservable.shared.chan[index].epgChannelID = "actionmax.us"
-                    ChannelsObservable.shared.chan[index].name = actionMaxEast
-                case actionMax.lowercased():
-                    ChannelsObservable.shared.chan[index].epgChannelID = "actionmax.us"
-                    ChannelsObservable.shared.chan[index].name = actionMax
-                case starzWest.lowercased():
-                    ChannelsObservable.shared.chan[index].epgChannelID = "starzwest.us"
-                    ChannelsObservable.shared.chan[index].name = starzWest
-                default:
-                    ()
+            ChannelsObservable.shared.chan = try decoder.decode(Channels.self, from: data).sorted { $0.name < $1.name }
+        
+            for (index, ch) in ChannelsObservable.shared.chan.enumerated() where filter.contains(ch.name) {
+                if let first = epgChannelID[ChannelsObservable.shared.chan[index].name]?.first,
+                   let last  = epgChannelID[ChannelsObservable.shared.chan[index].name]?.last {
+                ChannelsObservable.shared.chan[index].name = first
+                ChannelsObservable.shared.chan[index].epgChannelID = last
                 }
             }
-            getNowPlayingEpg()
+            
+            refreshNowPlayingEpgBytes()
         } catch {
+            awaitDone = false
+            LoginObservable.shared.status = "Get Streams Error"
+            setCurrentStep = .ConfigurationError
             print(error)
         }
     }
 }
 
-// MARK: Dealing with the illusion of Time
-public func antiTimeBubblePopper() {
-    nowPlayingEpoch = Int(Date().timeIntervalSince1970)
-    let pop = 0
-    
-    func refresh() {
-        DispatchQueue.global(qos: .background).async {
-            getNowPlayingEpg()
-        }
+public func refreshNowPlayingEpg() {
+    DispatchQueue.global(qos: .background).async {
+        getNowPlayingEpg()
     }
-    
-    for (key, bubble) in ChannelsObservable.shared.nowPlayingLive {
-        //MARK: Exterminate the expired program
-        if bubble.count > 2 {
-            let stopBubble = bubble[0].stopTimestamp
-            if nowPlayingEpoch > stopBubble  {
-                ChannelsObservable.shared.nowPlayingLive[key]?.remove(at: pop)
-                refresh()
-                break
+}
+
+public func refreshNowPlayingEpgBytes() {
+    DispatchQueue.global(qos: .background).async {
+        getNowPlayingEpgBytes()
+    }
+}
+
+
+public func getNowPlayingEpgBytes() {
+
+    let endpoint = api.getNowPlayingEndpointBytes()
+    rest.getRequest(endpoint: endpoint) { (bytes) in
+        guard let bytes = bytes else {
+            LoginObservable.shared.status = "get bytes error"
+            print("get bytes error")
+            return
+        }
+        
+        if let bytez = Int(String(decoding: bytes, as: UTF8.self)) {
+            if bytez > 100000 && bytez != nowPlayingBytes {
+                nowPlayingBytes = bytez
+                refreshNowPlayingEpg()
             }
         }
+       
     }
 }
 
 public func getNowPlayingEpg() {
+    lockCounter += 1
+    
+    if lock && lockCounter < 3 { return }
+    
+    lockCounter = 0
+    lock = true
+    
     LoginObservable.shared.status = "Mini IPTVee Guide"
     
     let endpoint = api.getNowPlayingEndpoint()
+    
     rest.getRequest(endpoint: endpoint) { (programguide) in
         guard let programguide = programguide else {
             print("getNowPlayingEpg Error")
+            awaitDone = true
+            lock = false
             return
         }
         
         do {
             ChannelsObservable.shared.nowPlayingLive = try decoder.decode(NowPlaying.self, from: programguide)
-            antiTimeBubblePopper()
-            awaitDone = true
         } catch {
+            LoginObservable.shared.status = "Mini Guide Error"
             print(error)
         }
+        
+        awaitDone = true
+        lock = false
     }
 }
 
@@ -297,9 +412,16 @@ public func getVideoOnDemandMovies() {
             return
         }
         
-        if let movieCategories = try? decoder.decode([MovieCategory].self, from: data) {
-            MoviesCatObservable.shared.movieCat = movieCategories
+        do {
+            
+            try MoviesCatObservable.shared.movieCat = decoder.decode([MovieCategory].self, from: data)
+            
+        } catch {
+            
+            print(error)
+            
         }
+       
     }
 }
 
@@ -312,9 +434,15 @@ public func getVideoOnDemandMoviesItems(categoryID: String) {
             return
         }
         
-        if let movieCategoryInfo = try? decoder.decode([MovieInfoElement].self, from: data) {
-            MoviesObservable.shared.movieCatInfo = movieCategoryInfo
+        do {
+            
+            try MoviesObservable.shared.movieCatInfo = decoder.decode([MovieInfoElement].self, from: data)
+            
+        } catch {
+            
+            print(error)
         }
+      
     }
 }
 
@@ -379,4 +507,11 @@ public func tvc(search: String) -> String  {
         print(error)
     }
     return str
+}
+
+public extension String {
+    func deletingPrefix(_ prefix: String) -> String {
+        guard self.hasPrefix(prefix) else { return self }
+        return String(self.dropFirst(prefix.count))
+    }
 }

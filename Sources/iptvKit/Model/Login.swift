@@ -47,13 +47,11 @@ enum Status: String {
     case ConfigurationError = "Configuration Error"
     case CategoriesError = "Categories Error"
     case ChannelsError = "Channels Error"
-
     case Configuration = "Configuration"
     case Categories = "Categories"
     case Channels = "Channels"
     case Completed = "Completed"
     case NowPlaying = "Now Playing"
-
 }
 
 var setCurrentStep: Stepper = .start {
@@ -64,29 +62,29 @@ var setCurrentStep: Stepper = .start {
             LoginObservable.shared.isAutoSwitchCat = false
             LoginObservable.shared.isLoggedIn = false
             LoginObservable.shared.status = Status.LoginError.rawValue
+            LoginObservable.shared.isLoginButtonDisabled = false
         case .CategoriesError :
             awaitDone = false
             LoginObservable.shared.isAutoSwitchCat = false
             LoginObservable.shared.isLoggedIn = false
             LoginObservable.shared.status = Status.CategoriesError.rawValue
+            LoginObservable.shared.isLoginButtonDisabled = false
         case .ChannelsError :
             awaitDone = false
             LoginObservable.shared.isAutoSwitchCat = false
             LoginObservable.shared.isLoggedIn = false
             LoginObservable.shared.status = Status.ChannelsError.rawValue
-
+            LoginObservable.shared.isLoginButtonDisabled = false
         case .config:
             getConfig()
             LoginObservable.shared.status = Status.Login.rawValue
-            
+            LoginObservable.shared.isLoginButtonDisabled = true
         case .categories:
             getCategories()
             LoginObservable.shared.status = Status.Categories.rawValue
-            
         case .channels:
             getChannels()
             LoginObservable.shared.status = Status.Channels.rawValue
-            
         case .finish:
             //done
             awaitDone = true
@@ -95,7 +93,6 @@ var setCurrentStep: Stepper = .start {
             LoginObservable.shared.isLoggedIn = true
             LoginObservable.shared.showingLogin = false
             LoginObservable.shared.isLoginButtonDisabled = false
-            
         default:
             awaitDone = false
 

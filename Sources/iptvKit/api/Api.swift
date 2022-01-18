@@ -32,6 +32,10 @@ public class Api {
     
     
     public func getNowPlayingEndpoint() -> URLComponents  {
-        nowPlayingEndpoint()
+        nowPlayingEndpoint(path: "/nowplaying")
+    }
+    
+    public func getNowPlayingEndpointBytes() -> URLComponents  {
+        nowPlayingEndpoint(path: "/jb")
     }
 }

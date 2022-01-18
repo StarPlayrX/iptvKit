@@ -99,13 +99,13 @@ func movieInfoEndpoint(_ creds: Credentials, iptv: IPTV, actn: String, vodID: St
 
 
 
-func nowPlayingEndpoint() -> URLComponents {
+func nowPlayingEndpoint(path: String) -> URLComponents {
     var epgEndpoint = URLComponents()
     
     epgEndpoint.scheme = "http"
     epgEndpoint.host = "www.starplayrx.com"
     epgEndpoint.port = 9999
-    epgEndpoint.path = "/nowplaying"
+    epgEndpoint.path = path
     
     return epgEndpoint
 }
