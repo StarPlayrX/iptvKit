@@ -10,6 +10,10 @@ public class Api {
     
     public init() {}
     
+    public func movEndpoint(user: String, pass: String, serv: String, svpt: String, smid: String, extn: String) -> URLComponents  {
+        return movieEndpoint(user: user, pass: pass, serv: serv, svpt: svpt, smid: smid, extn: extn)
+    }
+    
     public func getEndpoint(_ creds: Credentials,_ iptv: IPTV,_ actn: String) -> URLComponents  {
         endpoint(creds, iptv: iptv, actn: actn)
     }
@@ -29,7 +33,6 @@ public class Api {
     public func getMovieInfoEndpoint(_ creds: Credentials,_ iptv: IPTV,_ actn: String,_ vodID: String) -> URLComponents  {
         movieInfoEndpoint(creds, iptv: iptv, actn: actn, vodID: vodID)
     }
-    
     
     public func getNowPlayingEndpoint() -> URLComponents  {
         nowPlayingEndpoint(path: "/nowplaying")

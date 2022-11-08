@@ -30,7 +30,7 @@ public var cats: Categories = Categories()
 public var conf: Configuration? = nil
 public var chan: Channels = Channels()
 public var shortEpg: iptvShortEpg? = nil
-public let userSettings = "userSettings"
+public let userSettings = "userSettings2022"
 public let userSwitches = "userSwitches"
 
 public func saveUserDefaults() {

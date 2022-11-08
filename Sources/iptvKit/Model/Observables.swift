@@ -56,6 +56,8 @@ public class PlayerObservable: ObservableObject {
     @Published public var imageURL: String = ""
     @Published public var streamID: Int = -1
     @Published public var nowPlayingUrl: String = ""
+    @Published public var name: String = ""
+
 }
 
 //MARK: - 5
@@ -80,6 +82,7 @@ public func savePlayerSettings() {
     UserDefaults.standard.set(settings.autoPlayOnSelect, forKey: "autoPlayOnSelect")
     UserDefaults.standard.set(settings.stopWhenExitingPlayer, forKey: "stopWhenExitingPlayer")
     UserDefaults.standard.set(settings.backgroundPlayback, forKey: "backgroundPlayback")
+
 }
 
 //MARK: - 7 (currently not in use)

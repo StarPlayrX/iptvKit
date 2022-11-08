@@ -29,7 +29,7 @@ public struct MovieCategoryInfo: Codable {
     public let rating5Based: Double?
     public let added: String?
     public let categoryID: String
-    public var containerExtension: ContainerExtension.RawValue?
+    public var containerExtension: String?
 
     enum CodingKeys: String, CodingKey {
         case num = "num"
@@ -51,7 +51,7 @@ public struct MovieInfoElement: Codable {
     public let streamIcon: String?
     public let rating5Based: Double?
     public let categoryID: String
-    public var containerExtension: ContainerExtension.RawValue?
+    public var containerExtension: String?
 
     enum CodingKeys: String, CodingKey {
         case name = "name"
@@ -63,13 +63,28 @@ public struct MovieInfoElement: Codable {
     }
 }
 
-public enum ContainerExtension: String, Codable {
-    case ts = "ts"
-    case wmp = "wmp"
-    case m4v = "m4v"
-    case hls = "hls"
-    case mov = "mov"
-    case avi = "avi"
-    case mkv = "mkv"
-    case mp4 = "mp4"
-}
+//public enum ContainerExtension: String, Codable {
+//    case ts = "ts"
+//    case wmp = "wmp"
+//    case m4v = "m4v"
+//    case hls = "hls"
+//    case mov = "mov"
+//    case avi = "avi"
+//    case mkv = "mkv"
+//    case mp4 = "mp4"
+//    case webm = "webm"
+//    case vob = "vob"
+//    case ogv = "ogv"
+//    case ogg = "ogg"
+//    case qt = "qt"
+//    case wmv = "wmv"
+//    case mpg = "mpg"
+//    case mp2 = "mp2"
+//    case mpeg = "mpeg"
+//    case mpe = "mpe"
+//    case mpv = "mpv"
+//    case _3qp = "3qp"
+//    case _3q2 = "3q2"
+//    case flv = "flv"
+//    case f4v = "f4v"
+//}

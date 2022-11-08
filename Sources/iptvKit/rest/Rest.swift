@@ -18,13 +18,13 @@ public class Rest: NSObject, URLSessionDelegate {
         
         var urlReq = URLRequest(url: url)
         urlReq.httpMethod = "GET"
-        urlReq.timeoutInterval = TimeInterval(15)
-        urlReq.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        urlReq.timeoutInterval = TimeInterval(60)
+        urlReq.cachePolicy = .reloadRevalidatingCacheData
         let configuration = URLSessionConfiguration.default
-        let session = URLSession(configuration: configuration, delegate: self, delegateQueue:OperationQueue.main)
+        let session = URLSession(configuration: configuration, delegate: self, delegateQueue:OperationQueue.current)
         
         let task = session.dataTask(with: urlReq) { ( data, response, error ) in
-                        
+
             guard
                 let data = data
             else {
@@ -44,9 +44,10 @@ public class Rest: NSObject, URLSessionDelegate {
                 
         var urlReq = URLRequest(url: url)
         urlReq.httpMethod = "GET"
-        urlReq.timeoutInterval = TimeInterval(2)
-        urlReq.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        urlReq.timeoutInterval = TimeInterval(60)
+        urlReq.cachePolicy = .reloadIgnoringCacheData
         let task = URLSession.shared.dataTask(with: urlReq ) { ( data, _, _ ) in
+
             guard
                 let data = data,
                 let text = String(data: data, encoding: .utf8)
@@ -69,11 +70,10 @@ public class Rest: NSObject, URLSessionDelegate {
         
         var urlReq = URLRequest(url: url)
         urlReq.httpMethod = "GET"
-        urlReq.timeoutInterval = TimeInterval(5)
-        urlReq.cachePolicy = .returnCacheDataElseLoad
+        urlReq.timeoutInterval = TimeInterval(60)
+        urlReq.cachePolicy = .reloadIgnoringCacheData
    
         let task = URLSession.shared.dataTask(with: urlReq) {(data, _, _) in
-
             guard
                 let data = data
             else {

@@ -7,6 +7,26 @@
 
 import Foundation
 
+//MARK: - server["movie/:user/:pass/:serv/:svpt/:smid/:extn/hls.m3u8"] = { request in
+
+func movieEndpoint(user: String, pass: String, serv: String, svpt: String, smid: String, extn: String) -> URLComponents {
+    var movieEndpoint = URLComponents()
+    
+    movieEndpoint.scheme = "http"
+    movieEndpoint.host = "mini.local"
+    //movieEndpoint.host = "starplayrx.local"
+
+    //movieEndpoint.host = "m1.local"
+
+    //movieEndpoint.host = "localhost"
+
+    movieEndpoint.port = 8888
+    movieEndpoint.path = "/movie/\(user)/\(pass)/\(serv)/\(svpt)/\(smid)/\(extn)/hls.m3u8"
+
+    //print(movieEndpoint)
+    return movieEndpoint
+}
+
 func endpoint(_ creds: Credentials, iptv: IPTV, actn: String) -> URLComponents {
     var endpoint = URLComponents()
     
@@ -102,9 +122,9 @@ func movieInfoEndpoint(_ creds: Credentials, iptv: IPTV, actn: String, vodID: St
 func nowPlayingEndpoint(path: String) -> URLComponents {
     var epgEndpoint = URLComponents()
     
-    epgEndpoint.scheme = "http"
-    epgEndpoint.host = "www.starplayrx.com"
-    epgEndpoint.port = 9999
+    epgEndpoint.scheme = "https"
+    epgEndpoint.host = "pearsc.com"
+    epgEndpoint.port = 443
     epgEndpoint.path = path
     
     return epgEndpoint

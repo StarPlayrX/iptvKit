@@ -42,7 +42,6 @@ func getCategories() {
         if let catz = try? decoder.decode(Categories.self, from: categories) {
             cats = catz
             for (i,cat) in catz.enumerated() {
-                
                 let nam = cat.categoryName.components(separatedBy: " ")
                 var catName = ""
                 
@@ -92,6 +91,8 @@ func getConfig() {
         
         do {
             let config = try decoder.decode(Configuration.self, from: login)
+            
+            //print(config)
             LoginObservable.shared.config = config
             LoginObservable.shared.password = config.userInfo.password
             LoginObservable.shared.username = config.userInfo.username
@@ -115,7 +116,7 @@ public func getShortEpg(streamId: Int, channelName: String, imageURL: String) {
             LoginObservable.shared.status = "Get Short EPG Error"
             return
         }
-                
+        
         do {
             let epg = try decoder.decode(ShortIPTVEpg.self, from: programguide)
             shortEpg = epg
@@ -232,7 +233,7 @@ func getChannels() {
     var filter = [String]()
     var idz = [String]()
     var disp = [String]()
-
+    
     for channel in search.allCases {
         filter.append(channel.rawValue)
     }
@@ -244,35 +245,85 @@ func getChannels() {
     for ident in ids.allCases {
         idz.append(ident.rawValue.lowercased())
     }
-
+    
     var epgChannelID = [String:[String]]()
     
     for (index,ident) in filter.enumerated() {
         epgChannelID[ident] = [disp[index],idz[index]]
     }
-
-    rest.getRequest(endpoint: endpoint) { (data) in
         
-        guard let data = data else {
+    let file = getDocumentsDirectory().appendingPathComponent("channels.dat")
+    
+    var channelsData = Data()
+    
+    let clearCache = Data()
+
+    do {
+        channelsData = try Data(contentsOf: file)
+    } catch {
+        print(error)
+    }
+    
+    if channelsData.count == 0 {
+        rest.getRequest(endpoint: endpoint) { data in
+            guard let data = data else {
+                
+                LoginObservable.shared.status = "Get Live Streams Error"
+                setCurrentStep = .ConfigurationError
+                awaitDone = false
+                return
+            }
+            
+            try? data.write(to: file)
+
+            do {
+                ChannelsObservable.shared.chan = try decoder.decode(Channels.self, from: data).sorted { $0.name < $1.name }
+                for (index, ch) in ChannelsObservable.shared.chan.enumerated() where filter.contains(ch.name) {
+                    
+                    if let first = epgChannelID[ChannelsObservable.shared.chan[index].name]?.first,
+                       let last  = epgChannelID[ChannelsObservable.shared.chan[index].name]?.last {
+                        ChannelsObservable.shared.chan[index].name = first
+                        ChannelsObservable.shared.chan[index].epgChannelID = last
+                    }
+                }
+                
+            } catch {
+                try? clearCache.write(to: file)
+
+                awaitDone = false
+                LoginObservable.shared.status = "Get Streams Error"
+                setCurrentStep = .ConfigurationError
+                print(error)
+            }
+            
+            refreshNowPlayingEpg()
+
+        }
+    } else {
+        guard let data = channelsData as Data? else {
+            try? clearCache.write(to: file)
             LoginObservable.shared.status = "Get Live Streams Error"
             setCurrentStep = .ConfigurationError
             awaitDone = false
             return
         }
-        
+                
         do {
             ChannelsObservable.shared.chan = try decoder.decode(Channels.self, from: data).sorted { $0.name < $1.name }
-        
             for (index, ch) in ChannelsObservable.shared.chan.enumerated() where filter.contains(ch.name) {
+                
                 if let first = epgChannelID[ChannelsObservable.shared.chan[index].name]?.first,
                    let last  = epgChannelID[ChannelsObservable.shared.chan[index].name]?.last {
-                ChannelsObservable.shared.chan[index].name = first
-                ChannelsObservable.shared.chan[index].epgChannelID = last
+                    ChannelsObservable.shared.chan[index].name = first
+                    ChannelsObservable.shared.chan[index].epgChannelID = last
                 }
             }
             
-            refreshNowPlayingEpgBytes()
+            refreshNowPlayingEpg()
         } catch {
+            
+            try? clearCache.write(to: file)
+
             awaitDone = false
             LoginObservable.shared.status = "Get Streams Error"
             setCurrentStep = .ConfigurationError
@@ -295,7 +346,10 @@ public func refreshNowPlayingEpgBytes() {
 
 
 public func getNowPlayingEpgBytes() {
-
+    awaitDone = true
+    lock = false
+    //return
+    
     let endpoint = api.getNowPlayingEndpointBytes()
     rest.getRequest(endpoint: endpoint) { (bytes) in
         guard let bytes = bytes else {
@@ -310,7 +364,6 @@ public func getNowPlayingEpgBytes() {
                 refreshNowPlayingEpg()
             }
         }
-       
     }
 }
 
@@ -355,7 +408,7 @@ public func getVideoOnDemandSeries() {
             print("\(action) error")
             return
         }
-                
+        
         if let seriesCategories = try? decoder.decode([SeriesCategory].self, from: data) {
             SeriesCatObservable.shared.seriesCat = seriesCategories
         }
@@ -383,7 +436,7 @@ public func getVideoOnDemandSeriesInfo(seriesID: String) {
     let action = Actions.getSeriesInfo.rawValue
     let endpoint = api.getTVSeriesInfoEndpoint(creds, iptv, action, seriesID)
     
-    rest.getRequest(endpoint: endpoint) { (data) in
+    rest.getRequest(endpoint: endpoint) { data in
         
         guard let data = data else {
             print("\(action) error")
@@ -392,9 +445,9 @@ public func getVideoOnDemandSeriesInfo(seriesID: String) {
         
         do {
             let seriesTVShows = try decoder.decode(TVSeriesInfo.self, from: data)
-            let episodes = seriesTVShows.episodes
-            SeriesTVObservable.shared.episodes = episodes!
-            
+            if let episodes = seriesTVShows.episodes {
+                SeriesTVObservable.shared.episodes = episodes
+            }
         }
         catch {
             print(error)
@@ -413,15 +466,10 @@ public func getVideoOnDemandMovies() {
         }
         
         do {
-            
             try MoviesCatObservable.shared.movieCat = decoder.decode([MovieCategory].self, from: data)
-            
         } catch {
-            
             print(error)
-            
         }
-       
     }
 }
 
@@ -435,19 +483,16 @@ public func getVideoOnDemandMoviesItems(categoryID: String) {
         }
         
         do {
-            
             try MoviesObservable.shared.movieCatInfo = decoder.decode([MovieInfoElement].self, from: data)
-            
         } catch {
-            
             print(error)
         }
-      
     }
 }
 
+
 public func mvp(search: String) -> String  {
-    var str = "http://starplayrx.com/images/pleasestandby.png" //Please stand by
+    var str = "https://starplayrx.com/images/pleasestandby.png" //Please stand by
     do {
         let scheme = "http"
         let host = "api.themoviedb.org"
@@ -474,12 +519,11 @@ public func mvp(search: String) -> String  {
     catch {
         print(error)
     }
-    
     return str
 }
 
 public func tvc(search: String) -> String  {
-    var str = "http://starplayrx.com/images/pleasestandby.png" //Please stand by
+    var str = "https://starplayrx.com/images/pleasestandby.png" //Please stand by
     do {
         let scheme = "http"
         let host = "api.themoviedb.org"
@@ -514,4 +558,12 @@ public extension String {
         guard self.hasPrefix(prefix) else { return self }
         return String(self.dropFirst(prefix.count))
     }
+}
+
+func getDocumentsDirectory() -> URL {
+    // find all possible documents directories for this user
+    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+
+    // just send back the first one, which ought to be the only one
+    return paths[0]
 }

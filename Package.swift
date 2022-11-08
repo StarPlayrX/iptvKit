@@ -9,7 +9,6 @@ let package = Package(
         .iOS("15.0"),
         .macOS("11.5"),
         .tvOS("15.0")
-
        ],
 
     products: [

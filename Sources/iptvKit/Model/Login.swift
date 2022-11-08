@@ -25,6 +25,8 @@ public func login(_ user: String,_ pass: String,_ host: String,_ port: String) {
         iptv.port = port
         
         setCurrentStep = .config
+        
+        //print(user,pass)
     }
 }
 
@@ -50,7 +52,7 @@ enum Status: String {
     case Configuration = "Configuration"
     case Categories = "Categories"
     case Channels = "Channels"
-    case Completed = "Completed"
+    case Completed = ""
     case NowPlaying = "Now Playing"
 }
 
