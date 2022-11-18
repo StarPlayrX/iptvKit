@@ -368,12 +368,13 @@ public func getNowPlayingEpgBytes() {
 }
 
 public func getNowPlayingEpg() {
-    lockCounter += 1
     
-    if lock && lockCounter < 3 { return }
-    
-    lockCounter = 0
-    lock = true
+//    if lock {
+//        awaitDone = true
+//        lock = false
+//        return }
+//    
+//    lock = true
     
     LoginObservable.shared.status = "Mini IPTVee Guide"
     

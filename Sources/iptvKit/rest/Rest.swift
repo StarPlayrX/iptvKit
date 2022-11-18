@@ -18,7 +18,7 @@ public class Rest: NSObject, URLSessionDelegate {
         
         var urlReq = URLRequest(url: url)
         urlReq.httpMethod = "GET"
-        urlReq.timeoutInterval = TimeInterval(60)
+        urlReq.timeoutInterval = TimeInterval(15)
         urlReq.cachePolicy = .reloadRevalidatingCacheData
         let configuration = URLSessionConfiguration.default
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue:OperationQueue.current)
