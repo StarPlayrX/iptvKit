@@ -296,7 +296,10 @@ func getChannels() {
                 print(error)
             }
             
-            refreshNowPlayingEpg()
+           // refreshNowPlayingEpg()
+            
+            awaitDone = true
+            lock = false
 
         }
     } else {
@@ -319,7 +322,10 @@ func getChannels() {
                 }
             }
             
-            refreshNowPlayingEpg()
+            //refreshNowPlayingEpg()
+            
+            awaitDone = true
+            lock = false
         } catch {
             
             try? clearCache.write(to: file)
